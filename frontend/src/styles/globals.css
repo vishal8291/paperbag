@@ -1,0 +1,121 @@
+@import "tailwindcss";
+
+/* ── Design Tokens ─────────────────────────────────────────── */
+:root {
+  --green-950:  #0d2318;
+  --green-900:  #1a3a2a;
+  --green-800:  #2d6a4f;
+  --green-700:  #40916c;
+  --green-600:  #52b788;
+  --green-500:  #63d298;
+  --green-400:  #74c69d;
+  --green-300:  #95d5b2;
+  --green-200:  #b7e4c7;
+  --green-100:  #d8f3dc;
+  --cream:      #faf7f2;
+  --cream-dark: #f0ebe0;
+  --gold:       #c9a84c;
+  --gold-light: #e8c97a;
+  --charcoal:   #1c1c1e;
+}
+
+/* ── Base ──────────────────────────────────────────────────── */
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--cream);
+  color: var(--charcoal);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--cream-dark); }
+::-webkit-scrollbar-thumb { background: var(--green-700); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--green-800); }
+::selection { background: var(--green-400); color: var(--green-950); }
+
+/* ── Utilities ─────────────────────────────────────────────── */
+.glass {
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.45);
+}
+.glass-dark {
+  background: rgba(26,58,42,0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--green-800); color: #fff;
+  padding: 0.75rem 2rem; border-radius: 9999px;
+  font-weight: 600; font-size: 0.95rem; border: none;
+  transition: all 0.2s ease; cursor: pointer;
+}
+.btn-primary:hover {
+  background: var(--green-900);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(45,106,79,0.35);
+}
+
+.btn-outline {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: transparent; color: var(--green-800);
+  padding: 0.75rem 2rem; border-radius: 9999px;
+  font-weight: 600; font-size: 0.95rem;
+  border: 2px solid var(--green-800);
+  transition: all 0.2s ease; cursor: pointer;
+}
+.btn-outline:hover { background: var(--green-800); color: #fff; transform: translateY(-2px); }
+
+.btn-gold {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: var(--green-950); padding: 0.75rem 2rem; border-radius: 9999px;
+  font-weight: 700; border: none; transition: all 0.2s ease; cursor: pointer;
+  box-shadow: 0 4px 16px rgba(201,168,76,0.4);
+}
+.btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(201,168,76,0.5); }
+
+.card {
+  background: #fff; border-radius: 1.25rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+.card:hover { box-shadow: 0 16px 48px rgba(0,0,0,0.11); transform: translateY(-4px); }
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--green-700) 0%, var(--gold) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+
+.section-pad { padding: 5rem 0; }
+@media (max-width: 768px) { .section-pad { padding: 3rem 0; } }
+
+/* ── Animations ─────────────────────────────────────────────── */
+@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+@keyframes slide-up { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fade-in  { from { opacity:0; } to { opacity:1; } }
+@keyframes shimmer  { 0% { background-position:-200% center; } 100% { background-position:200% center; } }
+@keyframes ping-slow { 0%,100% { transform:scale(1); opacity:1; } 50% { transform:scale(1.15); opacity:0.7; } }
+
+.animate-float    { animation: float 4s ease-in-out infinite; }
+.animate-slide-up { animation: slide-up 0.5s ease forwards; }
+.animate-fade-in  { animation: fade-in 0.4s ease forwards; }
+.animate-ping-slow { animation: ping-slow 2s ease-in-out infinite; }
+
+.skeleton {
+  background: linear-gradient(90deg, #ece8e1 25%, #f5f2ec 50%, #ece8e1 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 0.5rem;
+}
+
+/* ── Chat bubbles ───────────────────────────────────────────── */
+.chat-bubble-user { background: var(--green-800); color:#fff; border-radius:1rem 1rem 0.25rem 1rem; }
+.chat-bubble-ai   { background: var(--cream-dark); color:var(--charcoal); border-radius:1rem 1rem 1rem 0.25rem; }

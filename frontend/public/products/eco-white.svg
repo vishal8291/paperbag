@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 450" width="400" height="450">
+  <defs>
+    <linearGradient id="bgE" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f4faf6"/>
+      <stop offset="100%" style="stop-color:#e0f2e8"/>
+    </linearGradient>
+    <linearGradient id="bagE" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8fffe"/>
+      <stop offset="50%" style="stop-color:#f0faf4"/>
+      <stop offset="100%" style="stop-color:#e4f5ec"/>
+    </linearGradient>
+    <linearGradient id="sideE" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#c8e8d4"/>
+      <stop offset="100%" style="stop-color:#e4f5ec"/>
+    </linearGradient>
+    <linearGradient id="handleE" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#2d6a4f"/>
+      <stop offset="100%" style="stop-color:#40916c"/>
+    </linearGradient>
+    <filter id="shE">
+      <feDropShadow dx="3" dy="8" stdDeviation="9" flood-color="#00000018"/>
+    </filter>
+  </defs>
+
+  <rect width="400" height="450" fill="url(#bgE)" rx="20"/>
+
+  <!-- Leaf pattern background -->
+  <g opacity="0.08" fill="#2d6a4f">
+    <ellipse cx="45" cy="80" rx="10" ry="20" transform="rotate(-25 45 80)"/>
+    <ellipse cx="355" cy="75" rx="8" ry="16" transform="rotate(25 355 75)"/>
+    <ellipse cx="38" cy="380" rx="9" ry="17" transform="rotate(-15 38 380)"/>
+    <ellipse cx="362" cy="375" rx="10" ry="19" transform="rotate(20 362 375)"/>
+    <ellipse cx="350" cy="200" rx="6" ry="13" transform="rotate(30 350 200)"/>
+    <ellipse cx="52" cy="220" rx="7" ry="14" transform="rotate(-30 52 220)"/>
+  </g>
+
+  <!-- Bag -->
+  <g filter="url(#shE)">
+    <polygon points="80,105 118,95 118,372 80,382" fill="url(#sideE)"/>
+    <rect x="118" y="95" width="194" height="277" fill="url(#bagE)" stroke="#c8e8d4" stroke-width="1"/>
+    <polygon points="312,95 350,105 350,382 312,372" fill="#c8e8d4"/>
+    <polygon points="80,382 118,372 312,372 350,382 312,394 118,394" fill="#b0d8c0"/>
+  </g>
+
+  <!-- Subtle top fold -->
+  <rect x="118" y="95" width="194" height="16" fill="white" opacity="0.8"/>
+  <line x1="118" y1="111" x2="312" y2="111" stroke="#a8d8b8" stroke-width="1"/>
+
+  <!-- Embossed border around print area -->
+  <rect x="132" y="125" width="166" height="210" rx="6" fill="none" stroke="#2d6a4f" stroke-width="1" opacity="0.15"/>
+
+  <!-- Large eco leaf illustration -->
+  <g transform="translate(215, 205)" opacity="0.85">
+    <!-- Main leaf -->
+    <path d="M0,-60 C28,-38 32,-8 14,12 C6,20 -6,20 -14,12 C-32,-8 -28,-38 0,-60 Z" fill="#2d6a4f"/>
+    <!-- Leaf veins -->
+    <path d="M0,-60 C4,-30 3,5 0,16" stroke="#f4faf6" stroke-width="1.8" fill="none"/>
+    <path d="M-8,-30 C-2,-20 2,-8 0,16" stroke="#f4faf6" stroke-width="0.8" fill="none" opacity="0.6"/>
+    <path d="M8,-30 C2,-20 -2,-8 0,16" stroke="#f4faf6" stroke-width="0.8" fill="none" opacity="0.6"/>
+    <path d="M-14,-10 C-6,-4 0,6 0,16" stroke="#f4faf6" stroke-width="0.7" fill="none" opacity="0.4"/>
+    <path d="M14,-10 C6,-4 0,6 0,16" stroke="#f4faf6" stroke-width="0.7" fill="none" opacity="0.4"/>
+    <!-- Stem with small roots -->
+    <line x1="0" y1="16" x2="0" y2="40" stroke="#1a4a30" stroke-width="2.5"/>
+    <path d="M0,40 C-8,45 -12,52 -10,58" stroke="#1a4a30" stroke-width="1.5" fill="none"/>
+    <path d="M0,40 C8,45 12,52 10,58" stroke="#1a4a30" stroke-width="1.5" fill="none"/>
+    <!-- Small side leaf -->
+    <path d="M0,10 C16,5 20,16 12,24 C6,20 0,16 0,10 Z" fill="#40916c" opacity="0.7"/>
+  </g>
+
+  <!-- Brand text below leaf -->
+  <text x="215" y="288" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" fill="#2d6a4f" font-weight="800" letter-spacing="4">PAPERBAG</text>
+  <line x1="152" y1="295" x2="180" y2="295" stroke="#2d6a4f" stroke-width="0.7" opacity="0.4"/>
+  <line x1="250" y1="295" x2="278" y2="295" stroke="#2d6a4f" stroke-width="0.7" opacity="0.4"/>
+  <text x="215" y="310" text-anchor="middle" font-family="Arial,sans-serif" font-size="8" fill="#40916c" letter-spacing="5">100% ECO</text>
+
+  <!-- Green rope handles -->
+  <path d="M160,95 Q157,48 215,48 Q273,48 270,95" fill="none" stroke="url(#handleE)" stroke-width="5" stroke-linecap="round"/>
+  <!-- Handle shimmer -->
+  <path d="M161,95 Q158,51 215,51 Q272,51 269,95" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
+
+  <!-- Eco certification stamp -->
+  <circle cx="215" cy="158" r="20" fill="none" stroke="#2d6a4f" stroke-width="1" opacity="0.2" stroke-dasharray="3,3"/>
+  <text x="215" y="153" text-anchor="middle" font-size="8" fill="#2d6a4f" opacity="0.35" font-weight="600">FSC</text>
+  <text x="215" y="164" text-anchor="middle" font-size="7" fill="#2d6a4f" opacity="0.3">CERTIFIED</text>
+
+  <rect x="0" y="415" width="400" height="35" fill="#2d6a4f" opacity="0.07" rx="0 0 20 20"/>
+  <text x="200" y="437" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#1a4a30" font-weight="700" letter-spacing="3" opacity="0.7">ECO WHITE BAG</text>
+</svg>

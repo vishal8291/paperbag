@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 450" width="400" height="450">
+  <defs>
+    <linearGradient id="bgF" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fffbf2"/>
+      <stop offset="100%" style="stop-color:#f5edd8"/>
+    </linearGradient>
+    <linearGradient id="bagF" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#d4a85c"/>
+      <stop offset="100%" style="stop-color:#b8883c"/>
+    </linearGradient>
+    <linearGradient id="sideF" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#9a6c28"/>
+      <stop offset="100%" style="stop-color:#c89848"/>
+    </linearGradient>
+    <filter id="shF">
+      <feDropShadow dx="3" dy="7" stdDeviation="7" flood-color="#00000025"/>
+    </filter>
+  </defs>
+
+  <rect width="400" height="450" fill="url(#bgF)" rx="20"/>
+
+  <!-- Bag — flat bottom stand-up style -->
+  <g filter="url(#shF)">
+    <!-- Back panel (slightly visible) -->
+    <rect x="108" y="88" width="200" height="285" fill="#c89848" opacity="0.5" transform="translate(8,-4)"/>
+    <!-- Side gusset left -->
+    <polygon points="82,105 120,98 120,372 82,378" fill="url(#sideF)"/>
+    <!-- Main front -->
+    <rect x="120" y="98" width="185" height="274" fill="url(#bagF)"/>
+    <!-- Side gusset right -->
+    <polygon points="305,98 342,105 342,378 305,372" fill="#9a6c28"/>
+    <!-- Bottom -->
+    <polygon points="82,378 120,372 305,372 342,378 305,390 120,390" fill="#7a5020"/>
+  </g>
+
+  <!-- Serrated top fold -->
+  <path d="M120,98 L125,90 L132,98 L139,90 L146,98 L153,90 L160,98 L167,90 L174,98 L181,90 L188,98 L195,90 L202,98 L209,90 L216,98 L223,90 L230,98 L237,90 L244,98 L251,90 L258,98 L265,90 L272,98 L279,90 L286,98 L293,90 L300,98 L305,98" fill="#c89848" stroke="#9a6c28" stroke-width="0.5"/>
+
+  <!-- Crease lines -->
+  <line x1="120" y1="118" x2="305" y2="118" stroke="#9a6c28" stroke-width="0.8" opacity="0.4"/>
+
+  <!-- Red checked pattern band -->
+  <g opacity="0.8" clip-path="url(#clipBand)">
+    <rect x="120" y="295" width="185" height="50" fill="#c8382a" opacity="0.12"/>
+    <!-- Check pattern -->
+    <line x1="120" y1="305" x2="305" y2="305" stroke="#c8382a" stroke-width="8" opacity="0.12"/>
+    <line x1="120" y1="325" x2="305" y2="325" stroke="#c8382a" stroke-width="8" opacity="0.12"/>
+    <line x1="140" y1="295" x2="140" y2="345" stroke="#c8382a" stroke-width="8" opacity="0.12"/>
+    <line x1="180" y1="295" x2="180" y2="345" stroke="#c8382a" stroke-width="8" opacity="0.12"/>
+    <line x1="220" y1="295" x2="220" y2="345" stroke="#c8382a" stroke-width="8" opacity="0.12"/>
+    <line x1="260" y1="295" x2="260" y2="345" stroke="#c8382a" stroke-width="8" opacity="0.12"/>
+    <line x1="300" y1="295" x2="300" y2="345" stroke="#c8382a" stroke-width="8" opacity="0.12"/>
+  </g>
+  <rect x="120" y="295" width="185" height="50" fill="none" stroke="#9a6c28" stroke-width="1" opacity="0.3"/>
+  <text x="212" y="325" text-anchor="middle" font-family="Georgia,serif" font-size="11" fill="#5a3010" font-weight="bold" letter-spacing="2">FOOD GRADE</text>
+
+  <!-- Grease-proof badge -->
+  <circle cx="212" cy="205" r="52" fill="none" stroke="#7a5020" stroke-width="1.5" opacity="0.3" stroke-dasharray="5,4"/>
+  <circle cx="212" cy="205" r="44" fill="#d4a85c" opacity="0.2"/>
+
+  <!-- Fork & knife icon -->
+  <g transform="translate(200, 205)" fill="#5a3010" opacity="0.7">
+    <!-- Fork -->
+    <rect x="-14" y="-28" width="3" height="20" rx="1.5"/>
+    <line x1="-14" y1="-30" x2="-14" y2="-20" stroke="#5a3010" stroke-width="3"/>
+    <line x1="-11" y1="-30" x2="-11" y2="-20" stroke="#5a3010" stroke-width="1.5"/>
+    <line x1="-8" y1="-30" x2="-8" y2="-20" stroke="#5a3010" stroke-width="1.5"/>
+    <line x1="-5" y1="-30" x2="-5" y2="-20" stroke="#5a3010" stroke-width="3"/>
+    <rect x="-14" y="-8" width="12" height="36" rx="2"/>
+    <!-- Knife -->
+    <path d="M6,-28 Q18,-28 18,-14 L8,-8 L8,28 L4,28 L4,-28 Z" rx="2"/>
+  </g>
+
+  <text x="212" y="170" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#5a3010" font-weight="600" letter-spacing="3" opacity="0.7">GREASE PROOF</text>
+
+  <!-- Flat handles -->
+  <rect x="148" y="50" width="20" height="56" rx="10" fill="#9a6c28"/>
+  <rect x="248" y="50" width="20" height="56" rx="10" fill="#9a6c28"/>
+  <rect x="150" y="52" width="16" height="52" rx="8" fill="#c89848" opacity="0.5"/>
+  <rect x="250" y="52" width="16" height="52" rx="8" fill="#c89848" opacity="0.5"/>
+
+  <rect x="0" y="415" width="400" height="35" fill="#b8883c" opacity="0.1" rx="0 0 20 20"/>
+  <text x="200" y="437" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#5a3010" font-weight="700" letter-spacing="3" opacity="0.7">FOOD KRAFT BAG</text>
+</svg>

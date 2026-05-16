@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment files — NEVER commit these
+.env
+.env.local
+**/.env
+**/.env.local
+**/.env.production
+
+# Build
+.next/
+out/
+build/
+dist/
+
+# Vercel
+.vercel
+
+# Uploads (local)
+backend/uploads/
+
+# Misc
+.DS_Store
+*.log
+*.pem
+.idea/
+.vscode/
+
+# Personal files not part of the project
+*.pdf
+*.html
+resume-*
+.env.txt

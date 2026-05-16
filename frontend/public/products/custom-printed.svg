@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 450" width="400" height="450">
+  <defs>
+    <linearGradient id="bgC" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0f8f4"/>
+      <stop offset="100%" style="stop-color:#ddf0e8"/>
+    </linearGradient>
+    <linearGradient id="bagC" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a5c3a"/>
+      <stop offset="50%" style="stop-color:#2d6a4f"/>
+      <stop offset="100%" style="stop-color:#145030"/>
+    </linearGradient>
+    <linearGradient id="sideC" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0d3822"/>
+      <stop offset="100%" style="stop-color:#2d6a4f"/>
+    </linearGradient>
+    <linearGradient id="goldC" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#c9a84c"/>
+      <stop offset="50%" style="stop-color:#e8c97a"/>
+      <stop offset="100%" style="stop-color:#c9a84c"/>
+    </linearGradient>
+    <filter id="shC">
+      <feDropShadow dx="4" dy="9" stdDeviation="9" flood-color="#00000030"/>
+    </filter>
+  </defs>
+
+  <rect width="400" height="450" fill="url(#bgC)" rx="20"/>
+
+  <!-- Subtle leaf pattern in bg -->
+  <g opacity="0.07" fill="#2d6a4f">
+    <ellipse cx="40" cy="80" rx="12" ry="22" transform="rotate(-30 40 80)"/>
+    <ellipse cx="360" cy="80" rx="10" ry="18" transform="rotate(30 360 80)"/>
+    <ellipse cx="30" cy="380" rx="8" ry="14" transform="rotate(-20 30 380)"/>
+    <ellipse cx="370" cy="370" rx="11" ry="19" transform="rotate(25 370 370)"/>
+  </g>
+
+  <!-- Bag -->
+  <g filter="url(#shC)">
+    <polygon points="78,102 115,92 115,372 78,382" fill="url(#sideC)"/>
+    <rect x="115" y="92" width="196" height="280" fill="url(#bagC)"/>
+    <polygon points="311,92 348,102 348,382 311,372" fill="#0d3822"/>
+    <polygon points="78,382 115,372 311,372 348,382 311,395 115,395" fill="#0a2e1c"/>
+  </g>
+
+  <!-- Gold top band -->
+  <rect x="115" y="92" width="196" height="15" fill="url(#goldC)"/>
+
+  <!-- White print zone on bag -->
+  <rect x="132" y="135" width="162" height="170" rx="4" fill="white" opacity="0.08"/>
+  <rect x="132" y="135" width="162" height="170" rx="4" fill="none" stroke="url(#goldC)" stroke-width="0.8" opacity="0.5"/>
+
+  <!-- Logo concept printed on bag -->
+  <!-- Big leaf logo white -->
+  <g transform="translate(213, 190)" opacity="0.92">
+    <path d="M0,-40 C22,-25 28,-5 12,10 C5,16 -5,16 -12,10 C-28,-5 -22,-25 0,-40 Z" fill="white"/>
+    <path d="M0,-40 C5,-20 4,5 0,14" stroke="#2d6a4f" stroke-width="2" fill="none"/>
+    <path d="M-12,10 Q-8,0 0,14" stroke="#2d6a4f" stroke-width="1.5" fill="none"/>
+    <path d="M12,10 Q8,0 0,14" stroke="#2d6a4f" stroke-width="1.5" fill="none"/>
+    <!-- Stem -->
+    <line x1="0" y1="14" x2="0" y2="32" stroke="white" stroke-width="2"/>
+    <!-- Small side leaf -->
+    <path d="M0,5 C14,0 18,10 10,16" fill="white" opacity="0.7"/>
+  </g>
+
+  <!-- Brand name print -->
+  <text x="213" y="255" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" fill="white" font-weight="800" letter-spacing="3">PAPERBAG</text>
+  <line x1="145" y1="262" x2="175" y2="262" stroke="url(#goldC)" stroke-width="0.8"/>
+  <line x1="251" y1="262" x2="281" y2="262" stroke="url(#goldC)" stroke-width="0.8"/>
+  <text x="213" y="277" text-anchor="middle" font-family="Arial,sans-serif" font-size="8" fill="white" letter-spacing="5" opacity="0.65">ECO PACKAGING</text>
+
+  <!-- Gold corner marks (print registration marks) -->
+  <g stroke="url(#goldC)" stroke-width="1" fill="none" opacity="0.4">
+    <path d="M132,135 L140,135 M132,135 L132,143"/>
+    <path d="M294,135 L286,135 M294,135 L294,143"/>
+    <path d="M132,305 L140,305 M132,305 L132,297"/>
+    <path d="M294,305 L286,305 M294,305 L294,297"/>
+  </g>
+
+  <!-- "CUSTOM" badge bottom -->
+  <rect x="155" y="318" width="116" height="22" rx="11" fill="url(#goldC)"/>
+  <text x="213" y="333" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#1a3a2a" font-weight="800" letter-spacing="3">CUSTOM PRINT</text>
+
+  <!-- Twisted cord handles -->
+  <path d="M158,93 Q155,46 213,46 Q271,46 268,93" fill="none" stroke="#1a3a2a" stroke-width="5.5" stroke-linecap="round"/>
+  <path d="M159,93 Q156,48 213,48 Q270,48 267,93" fill="none" stroke="url(#goldC)" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+
+  <rect x="0" y="418" width="400" height="32" fill="#1a3a2a" opacity="0.08" rx="0 0 20 20"/>
+  <text x="200" y="439" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#1a3a2a" font-weight="700" letter-spacing="3" opacity="0.7">CUSTOM PRINTED BAG</text>
+</svg>

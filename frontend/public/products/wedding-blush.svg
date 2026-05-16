@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 450" width="400" height="450">
+  <defs>
+    <linearGradient id="bgW" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fff8f5"/>
+      <stop offset="100%" style="stop-color:#fde8e0"/>
+    </linearGradient>
+    <linearGradient id="bagW" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f9e4dc"/>
+      <stop offset="100%" style="stop-color:#f0c8bc"/>
+    </linearGradient>
+    <linearGradient id="sideW" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#d4a898"/>
+      <stop offset="100%" style="stop-color:#f0c8bc"/>
+    </linearGradient>
+    <linearGradient id="roseGold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#c4846a"/>
+      <stop offset="50%" style="stop-color:#e8a898"/>
+      <stop offset="100%" style="stop-color:#c4846a"/>
+    </linearGradient>
+    <filter id="shW">
+      <feDropShadow dx="3" dy="8" stdDeviation="8" flood-color="#00000018"/>
+    </filter>
+  </defs>
+
+  <rect width="400" height="450" fill="url(#bgW)" rx="20"/>
+
+  <!-- Soft circles decoration -->
+  <circle cx="60" cy="60" r="30" fill="#f9d4c8" opacity="0.3"/>
+  <circle cx="340" cy="60" r="20" fill="#f9d4c8" opacity="0.2"/>
+  <circle cx="340" cy="390" r="25" fill="#f9d4c8" opacity="0.25"/>
+  <circle cx="60" cy="390" r="15" fill="#f9d4c8" opacity="0.2"/>
+
+  <!-- Bag -->
+  <g filter="url(#shW)">
+    <polygon points="80,100 118,90 118,375 80,385" fill="url(#sideW)"/>
+    <rect x="118" y="90" width="192" height="285" fill="url(#bagW)"/>
+    <polygon points="310,90 348,100 348,385 310,375" fill="#d4a898"/>
+    <polygon points="80,385 118,375 310,375 348,385 310,398 118,398" fill="#c4907e"/>
+  </g>
+
+  <!-- Rose gold top band -->
+  <rect x="118" y="90" width="192" height="16" fill="url(#roseGold)"/>
+
+  <!-- Satin ribbon vertical -->
+  <rect x="193" y="106" width="14" height="269" fill="url(#roseGold)" opacity="0.55"/>
+  <!-- Satin ribbon horizontal -->
+  <rect x="118" y="222" width="192" height="14" fill="url(#roseGold)" opacity="0.55"/>
+
+  <!-- Elegant bow at center -->
+  <!-- Bow left loop -->
+  <path d="M185,229 Q162,210 168,224 Q172,232 185,228" fill="#e8a898"/>
+  <path d="M185,229 Q162,210 170,226 Q175,233 185,230" fill="#c4846a" opacity="0.5"/>
+  <!-- Bow right loop -->
+  <path d="M215,229 Q238,210 232,224 Q228,232 215,228" fill="#e8a898"/>
+  <path d="M215,229 Q238,210 230,226 Q225,233 215,230" fill="#c4846a" opacity="0.5"/>
+  <!-- Bow bottom left loop -->
+  <path d="M185,235 Q162,254 168,240 Q172,232 185,236" fill="#e8a898"/>
+  <!-- Bow bottom right loop -->
+  <path d="M215,235 Q238,254 232,240 Q228,232 215,236" fill="#e8a898"/>
+  <!-- Tails -->
+  <path d="M197,240 Q190,260 185,272" stroke="#c4846a" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M203,240 Q210,260 215,272" stroke="#c4846a" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- Center knot -->
+  <ellipse cx="200" cy="232" rx="10" ry="7" fill="url(#roseGold)"/>
+  <ellipse cx="200" cy="232" rx="5" ry="3.5" fill="#f9e4dc"/>
+
+  <!-- Floral print top area -->
+  <!-- Rose 1 -->
+  <g transform="translate(152, 160)" opacity="0.55">
+    <circle cx="0" cy="0" r="12" fill="#f0b8a8"/>
+    <circle cx="0" cy="0" r="8" fill="#e8a898"/>
+    <circle cx="0" cy="0" r="4" fill="#c4846a"/>
+    <path d="M-8,-8 Q-4,-14 0,-10 Q4,-14 8,-8" fill="#f9d4c8"/>
+    <path d="M8,8 Q14,4 10,0 Q14,-4 8,-8" fill="#f0b8a8" opacity="0.6"/>
+  </g>
+  <!-- Rose 2 -->
+  <g transform="translate(248, 155)" opacity="0.45">
+    <circle cx="0" cy="0" r="9" fill="#f0b8a8"/>
+    <circle cx="0" cy="0" r="5" fill="#c4846a"/>
+  </g>
+  <!-- Small flowers -->
+  <circle cx="175" cy="145" r="3" fill="#f0b8a8" opacity="0.5"/>
+  <circle cx="225" cy="148" r="2.5" fill="#e8a898" opacity="0.5"/>
+  <circle cx="162" cy="178" r="2" fill="#c4846a" opacity="0.4"/>
+
+  <!-- Leaves -->
+  <path d="M140,162 Q148,152 155,160" fill="#90b870" opacity="0.4"/>
+  <path d="M240,150 Q250,144 256,154" fill="#90b870" opacity="0.35"/>
+
+  <!-- Silk ribbon handles -->
+  <path d="M158,90 Q155,48 200,48 Q245,48 242,90" fill="none" stroke="url(#roseGold)" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- Bottom label -->
+  <rect x="0" y="418" width="400" height="32" fill="#c4846a" opacity="0.08" rx="0 0 20 20"/>
+  <text x="200" y="439" text-anchor="middle" font-family="Georgia,serif" font-size="11" fill="#8a5040" font-weight="700" letter-spacing="3" opacity="0.8">WEDDING BLUSH</text>
+</svg>

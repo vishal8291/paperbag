@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 450" width="400" height="450">
+  <defs>
+    <linearGradient id="bgT" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8f5ef"/>
+      <stop offset="100%" style="stop-color:#ede5d5"/>
+    </linearGradient>
+    <linearGradient id="bagT" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e8dcc8"/>
+      <stop offset="100%" style="stop-color:#d4c4a8"/>
+    </linearGradient>
+    <linearGradient id="handleT" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#8b6f4e"/>
+      <stop offset="100%" style="stop-color:#6b5030"/>
+    </linearGradient>
+    <filter id="shT">
+      <feDropShadow dx="3" dy="8" stdDeviation="8" flood-color="#00000020"/>
+    </filter>
+  </defs>
+
+  <rect width="400" height="450" fill="url(#bgT)" rx="20"/>
+
+  <!-- Bag body -->
+  <g filter="url(#shT)">
+    <!-- Main bag shape - slightly wider at bottom like a tote -->
+    <path d="M95,110 L305,110 L325,380 L75,380 Z" fill="url(#bagT)"/>
+    <!-- Side shadow -->
+    <path d="M95,110 L75,380 L85,380 L103,110 Z" fill="#b8a888" opacity="0.5"/>
+    <path d="M305,110 L325,380 L315,380 L297,110 Z" fill="#b8a888" opacity="0.3"/>
+  </g>
+
+  <!-- Bottom gusset line -->
+  <line x1="75" y1="380" x2="325" y2="380" stroke="#a89878" stroke-width="2"/>
+  <path d="M75,380 L95,395 L305,395 L325,380" fill="#c4b098" opacity="0.8"/>
+
+  <!-- Top hem fold -->
+  <path d="M95,110 L305,110 L305,128 L95,128 Z" fill="#d4c4a8"/>
+  <line x1="95" y1="128" x2="305" y2="128" stroke="#a89878" stroke-width="1.5"/>
+
+  <!-- Canvas texture stitching -->
+  <!-- Vertical center stitch line -->
+  <line x1="200" y1="128" x2="200" y2="380" stroke="#a89878" stroke-width="1" stroke-dasharray="6,5" opacity="0.4"/>
+  <!-- Horizontal stitch at 1/3 -->
+  <line x1="85" y1="220" x2="315" y2="220" stroke="#a89878" stroke-width="1" stroke-dasharray="6,5" opacity="0.3"/>
+
+  <!-- Handle straps — thick canvas -->
+  <rect x="145" y="50" width="16" height="75" rx="8" fill="url(#handleT)"/>
+  <rect x="239" y="50" width="16" height="75" rx="8" fill="url(#handleT)"/>
+  <!-- Handle stitch lines -->
+  <line x1="149" y1="56" x2="149" y2="118" stroke="#c9a87a" stroke-width="0.8" stroke-dasharray="4,3"/>
+  <line x1="257" y1="56" x2="257" y2="118" stroke="#c9a87a" stroke-width="0.8" stroke-dasharray="4,3"/>
+  <!-- Handle attachment tabs -->
+  <rect x="140" y="118" width="26" height="12" rx="3" fill="#6b5030"/>
+  <rect x="234" y="118" width="26" height="12" rx="3" fill="#6b5030"/>
+
+  <!-- Leaf + brand print on bag -->
+  <g transform="translate(200, 250)">
+    <!-- Big leaf -->
+    <path d="M0,-55 C15,-35 20,-10 0,5 C-20,-10 -15,-35 0,-55 Z" fill="#6b8c42" opacity="0.75"/>
+    <path d="M0,-55 C5,-35 5,-10 0,5" stroke="#4a6828" stroke-width="1.2" fill="none"/>
+    <!-- Small leaf -->
+    <path d="M8,-30 C22,-22 26,-8 14,0 C8,-10 4,-22 8,-30 Z" fill="#7a9e50" opacity="0.65" transform="rotate(35)"/>
+    <!-- Stem -->
+    <line x1="0" y1="5" x2="0" y2="25" stroke="#4a6828" stroke-width="1.5"/>
+  </g>
+
+  <!-- Brand text -->
+  <text x="200" y="300" text-anchor="middle" font-family="Georgia,serif" font-size="15" fill="#4a3520" font-weight="bold" letter-spacing="3">PAPERBAG</text>
+  <text x="200" y="318" text-anchor="middle" font-family="Georgia,serif" font-size="9" fill="#6b5030" letter-spacing="5">ECO TOTE</text>
+
+  <!-- Bottom label -->
+  <rect x="0" y="420" width="400" height="30" fill="#6b5030" opacity="0.08" rx="0 0 20 20"/>
+  <text x="200" y="440" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#4a3520" font-weight="700" letter-spacing="3" opacity="0.7">NATURAL TOTE BAG</text>
+</svg>
