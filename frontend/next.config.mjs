@@ -8,6 +8,7 @@ const nextConfig = {
       { protocol: "http",  hostname: "192.168.1.40" },
       { protocol: "https", hostname: "*.onrender.com" },
       { protocol: "https", hostname: "*.vercel.app" },
+      { protocol: "https", hostname: "*.railway.app" },
     ],
     // Allow SVG images
     dangerouslyAllowSVG: true,
