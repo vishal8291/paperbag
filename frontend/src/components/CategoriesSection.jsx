@@ -19,25 +19,21 @@ const CATS = [
   { icon: "🌿", name: "Sustainable",     color: "#34d399" },
 ];
 
-// Position n items evenly on a circle of given radius
-// Star points: items at star-tip angles (every 360/n degrees)
-function getStarPositions(count, radius) {
+// Alternate outer (tip) and inner (valley) radii to form a star shape
+const OUTER_R = 230;
+const INNER_R = 130;
+
+function getStarPoints(count) {
+  // count items alternating between outer and inner radius
   return Array.from({ length: count }, (_, i) => {
     const angle = (i * 360) / count - 90; // start from top
-    const rad = (angle * Math.PI) / 180;
-    return {
-      x: radius * Math.cos(rad),
-      y: radius * Math.sin(rad),
-      angle,
-    };
+    const rad   = (angle * Math.PI) / 180;
+    const r     = i % 2 === 0 ? OUTER_R : INNER_R;
+    return { x: r * Math.cos(rad), y: r * Math.sin(rad), delay: i * 0.35 };
   });
 }
 
-// Inner ring (6 items, smaller radius) + outer ring (12 items, larger radius)
-const INNER = CATS.slice(0, 6);
-const OUTER = CATS.slice(6, 12);
-
-const CENTER_SIZE = 140; // px for center circle
+const POINTS = getStarPoints(12);
 
 export default function CategoriesSection() {
   return (
@@ -50,7 +46,7 @@ export default function CategoriesSection() {
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 60% 60% at 50% 50%, rgba(82,183,136,0.07) 0%, transparent 70%)",
+            "radial-gradient(ellipse 55% 55% at 50% 50%, rgba(82,183,136,0.07) 0%, transparent 70%)",
         }}
       />
 
@@ -81,167 +77,101 @@ export default function CategoriesSection() {
         </motion.div>
       </div>
 
-      {/* Star wheel */}
-      <div className="flex justify-center items-center">
-        {/* Outer container — sized to fit both rings */}
+      {/* ── Star wheel (desktop) ── */}
+      <div className="hidden md:flex justify-center items-center">
         <div
-          className="relative"
-          style={{ width: "600px", height: "600px" }}
+          className="relative star-spin"
+          style={{ width: "560px", height: "560px" }}
         >
-          {/* ── Outer ring orbit lines ── */}
-          <div
-            className="absolute rounded-full pointer-events-none"
-            style={{
-              width: "560px", height: "560px",
-              top: "20px", left: "20px",
-              border: "1px dashed rgba(255,255,255,0.06)",
-            }}
-          />
-          {/* Inner ring orbit line */}
-          <div
-            className="absolute rounded-full pointer-events-none"
-            style={{
-              width: "320px", height: "320px",
-              top: "140px", left: "140px",
-              border: "1px dashed rgba(82,183,136,0.12)",
-            }}
-          />
+          {/* Decorative orbit rings */}
+          <div className="absolute rounded-full pointer-events-none" style={{
+            width: "480px", height: "480px", top: "40px", left: "40px",
+            border: "1px dashed rgba(255,255,255,0.05)",
+          }} />
+          <div className="absolute rounded-full pointer-events-none" style={{
+            width: "280px", height: "280px", top: "140px", left: "140px",
+            border: "1px dashed rgba(82,183,136,0.1)",
+          }} />
 
-          {/* ── Outer ring — 6 categories, slow clockwise ── */}
-          <motion.div
-            className="absolute inset-0"
-            animate={{ rotate: 360 }}
-            transition={{ repeat: Infinity, duration: 40, ease: "linear" }}
-          >
-            {getStarPositions(6, 265).map(({ x, y }, i) => {
-              const cat = OUTER[i];
-              return (
-                <Link key={i} href="/products">
-                  {/* Counter-rotate the tile so it stays upright */}
-                  <motion.div
-                    animate={{ rotate: -360 }}
-                    transition={{ repeat: Infinity, duration: 40, ease: "linear" }}
-                    className="absolute flex flex-col items-center justify-center gap-1.5 rounded-2xl cursor-pointer group"
-                    style={{
-                      width: "96px",
-                      height: "96px",
-                      top: "50%",
-                      left: "50%",
-                      transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
-                      background: `${cat.color}14`,
-                      border: `1px solid ${cat.color}28`,
-                      transition: "background 0.2s, border-color 0.2s",
-                    }}
-                    whileHover={{
-                      background: `${cat.color}28`,
-                      borderColor: `${cat.color}55`,
-                      scale: 1.1,
-                    }}
-                  >
-                    <span className="text-2xl">{cat.icon}</span>
-                    <p
-                      className="text-[9px] font-semibold text-center leading-tight px-1"
-                      style={{ color: "rgba(255,255,255,0.75)" }}
-                    >
-                      {cat.name}
-                    </p>
-                  </motion.div>
-                </Link>
-              );
-            })}
-          </motion.div>
-
-          {/* ── Inner ring — 6 categories, slow counter-clockwise ── */}
-          <motion.div
-            className="absolute inset-0"
-            animate={{ rotate: -360 }}
-            transition={{ repeat: Infinity, duration: 30, ease: "linear" }}
-          >
-            {getStarPositions(6, 148).map(({ x, y }, i) => {
-              const cat = INNER[i];
-              return (
-                <Link key={i} href="/products">
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ repeat: Infinity, duration: 30, ease: "linear" }}
-                    className="absolute flex flex-col items-center justify-center gap-1.5 rounded-xl cursor-pointer group"
-                    style={{
-                      width: "84px",
-                      height: "84px",
-                      top: "50%",
-                      left: "50%",
-                      transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
-                      background: `${cat.color}14`,
-                      border: `1px solid ${cat.color}28`,
-                      transition: "background 0.2s, border-color 0.2s",
-                    }}
-                    whileHover={{
-                      background: `${cat.color}28`,
-                      borderColor: `${cat.color}55`,
-                      scale: 1.1,
-                    }}
-                  >
-                    <span className="text-xl">{cat.icon}</span>
-                    <p
-                      className="text-[9px] font-semibold text-center leading-tight px-1"
-                      style={{ color: "rgba(255,255,255,0.75)" }}
-                    >
-                      {cat.name}
-                    </p>
-                  </motion.div>
-                </Link>
-              );
-            })}
-          </motion.div>
-
-          {/* ── Center circle ── */}
-          <div
-            className="absolute flex flex-col items-center justify-center rounded-full"
-            style={{
-              width: `${CENTER_SIZE}px`,
-              height: `${CENTER_SIZE}px`,
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              background: "radial-gradient(circle, rgba(82,183,136,0.18) 0%, rgba(82,183,136,0.04) 70%)",
-              border: "1px solid rgba(82,183,136,0.25)",
-              zIndex: 10,
-            }}
-          >
-            <span className="text-4xl mb-1">🌿</span>
-            <p className="text-xs font-black text-white tracking-tight">Paperbag</p>
-            <p className="text-[9px] mt-0.5" style={{ color: "#74c69d" }}>500+ Sellers</p>
-          </div>
-
-          {/* Star tip lines radiating from center (decorative) */}
-          {getStarPositions(12, 265).map(({ x, y }, i) => (
+          {/* Star tip spokes */}
+          {Array.from({ length: 6 }).map((_, i) => (
             <div
               key={i}
               className="absolute pointer-events-none"
               style={{
                 width: "1px",
-                height: "265px",
+                height: "240px",
                 top: "50%",
                 left: "50%",
                 transformOrigin: "top center",
-                transform: `translate(-50%, 0) rotate(${(i * 30)}deg)`,
-                background: "linear-gradient(to bottom, transparent 10%, rgba(82,183,136,0.06) 50%, transparent 100%)",
+                transform: `translate(-50%, 0) rotate(${i * 30}deg)`,
+                background: "linear-gradient(to bottom, transparent 5%, rgba(82,183,136,0.08) 50%, transparent 100%)",
               }}
             />
           ))}
+
+          {/* Category tiles — each counter-rotates to stay upright, and floats */}
+          {CATS.map((cat, i) => {
+            const { x, y, delay } = POINTS[i];
+            return (
+              <Link key={i} href="/products">
+                <div
+                  className="absolute cat-tile counter-spin"
+                  style={{
+                    width: "92px",
+                    height: "92px",
+                    top: "50%",
+                    left: "50%",
+                    marginTop: "-46px",
+                    marginLeft: "-46px",
+                    "--tx": `${x}px`,
+                    "--ty": `${y}px`,
+                    "--float-delay": `${delay}s`,
+                  }}
+                >
+                  <div
+                    className="w-full h-full rounded-2xl flex flex-col items-center justify-center gap-1.5 cursor-pointer transition-all duration-200 hover:scale-110"
+                    style={{
+                      background: `${cat.color}14`,
+                      border: `1px solid ${cat.color}30`,
+                    }}
+                  >
+                    <span className="text-2xl">{cat.icon}</span>
+                    <p className="text-[9px] font-bold text-center leading-tight px-1"
+                      style={{ color: "rgba(255,255,255,0.8)" }}>
+                      {cat.name}
+                    </p>
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
+
+          {/* Center */}
+          <div
+            className="absolute flex flex-col items-center justify-center rounded-full z-10"
+            style={{
+              width: "130px", height: "130px",
+              top: "50%", left: "50%",
+              transform: "translate(-50%, -50%)",
+              background: "radial-gradient(circle, rgba(82,183,136,0.2) 0%, rgba(82,183,136,0.04) 70%)",
+              border: "1px solid rgba(82,183,136,0.3)",
+            }}
+          >
+            <span className="text-3xl mb-1">🌿</span>
+            <p className="text-xs font-black text-white">Paperbag</p>
+            <p className="text-[9px] mt-0.5" style={{ color: "#74c69d" }}>500+ Sellers</p>
+          </div>
         </div>
       </div>
 
-      {/* Mobile fallback — simple grid */}
-      <div className="md:hidden grid grid-cols-3 gap-3 px-6 mt-10">
+      {/* ── Mobile: simple grid ── */}
+      <div className="md:hidden grid grid-cols-3 gap-3 px-6">
         {CATS.map(({ icon, name, color }) => (
           <Link key={name} href="/products">
             <div
               className="flex flex-col items-center gap-1.5 rounded-2xl p-3 text-center"
-              style={{
-                background: `${color}12`,
-                border: `1px solid ${color}25`,
-              }}
+              style={{ background: `${color}12`, border: `1px solid ${color}25` }}
             >
               <span className="text-2xl">{icon}</span>
               <p className="text-[9px] font-semibold" style={{ color: "rgba(255,255,255,0.75)" }}>{name}</p>
@@ -260,6 +190,37 @@ export default function CategoriesSection() {
           <button className="btn-white text-sm font-bold">Browse All Categories →</button>
         </Link>
       </motion.div>
+
+      <style>{`
+        /* Whole star rotates slowly */
+        @keyframes star-rotate {
+          from { transform: rotate(0deg); }
+          to   { transform: rotate(360deg); }
+        }
+        .star-spin {
+          animation: star-rotate 60s linear infinite;
+        }
+
+        /* Each tile translates to its star position, then counter-rotates to stay upright, then floats */
+        @keyframes tile-float {
+          0%, 100% { transform: translate(var(--tx), var(--ty)) rotate(var(--spin, 0deg)) translateY(0px); }
+          50%       { transform: translate(var(--tx), var(--ty)) rotate(var(--spin, 0deg)) translateY(-10px); }
+        }
+        .cat-tile {
+          animation: tile-float 4s ease-in-out infinite;
+          animation-delay: var(--float-delay, 0s);
+          transform: translate(var(--tx), var(--ty));
+        }
+
+        /* Counter-spin so tiles face upright while the star rotates */
+        @keyframes counter-rotate {
+          from { transform: rotate(0deg); }
+          to   { transform: rotate(-360deg); }
+        }
+        .counter-spin > div {
+          animation: counter-rotate 60s linear infinite;
+        }
+      `}</style>
     </section>
   );
 }
