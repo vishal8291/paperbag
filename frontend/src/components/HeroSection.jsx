@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
+// videoError state removed — video is always rendered unconditionally
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useStore } from "../context/StoreContext";
@@ -17,7 +18,6 @@ export default function HeroSection() {
   const { store, slug } = useStore();
   const [wordIdx, setWordIdx] = useState(0);
   const [notifVisible, setNotifVisible] = useState(false);
-  const [videoError, setVideoError] = useState(false);
   const videoRef = useRef(null);
 
   const isPaperbag = !slug || slug === "paperbag";
@@ -43,28 +43,22 @@ export default function HeroSection() {
     >
       {/* ── Video Background ── */}
       <div className="absolute inset-0 z-0">
-        {/* Base dark bg — always behind everything */}
+        {/* Base dark bg */}
         <div
           className="absolute inset-0"
-          style={{
-            zIndex: 0,
-            background: videoError
-              ? "linear-gradient(135deg, #080e09 0%, #0d2318 30%, #1a3a2a 60%, #080808 100%)"
-              : "#080e09",
-            animation: videoError ? "gradient-shift 8s ease-in-out infinite" : "none",
-          }}
+          style={{ zIndex: 0, background: "#080e09" }}
         />
 
-        {/* Video layer */}
+        {/* Video layer — always rendered, no error state */}
         <video
           ref={videoRef}
           autoPlay
           muted
           loop
           playsInline
+          preload="auto"
           className="absolute inset-0 w-full h-full object-cover"
           style={{ opacity: 0.55, zIndex: 1 }}
-          onError={() => setVideoError(true)}
         >
           <source src="/hero-bg.mp4" type="video/mp4" />
         </video>
