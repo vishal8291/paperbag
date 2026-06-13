@@ -132,9 +132,11 @@ export default function Commitment() {
                         </div>
                       )}
                       <div
-                        className={`max-w-[78%] px-3 py-2 rounded-2xl text-xs leading-relaxed whitespace-pre-line ${
-                          msg.role === "user" ? "chat-bubble-user" : "chat-bubble-ai"
-                        }`}
+                        className={`max-w-[78%] px-3 py-2 rounded-2xl text-xs leading-relaxed whitespace-pre-line`}
+                        style={msg.role === "user"
+                          ? { background: "var(--green-800)", color: "#fff", borderRadius: "1rem 1rem 0.25rem 1rem" }
+                          : { background: "rgba(255,255,255,0.10)", color: "#fff", borderRadius: "1rem 1rem 1rem 0.25rem", border: "1px solid rgba(255,255,255,0.08)" }
+                        }
                       >
                         {msg.text}
                       </div>

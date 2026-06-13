@@ -105,6 +105,7 @@ export default function Navbar() {
           background: "transparent",
           backdropFilter: "none",
           borderBottom: "none",
+          textShadow: "0 1px 8px rgba(0,0,0,0.55)",
         }}
       >
         <div className="max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between h-16 gap-6">
@@ -118,7 +119,7 @@ export default function Navbar() {
               ? <img src={store.logo} alt={store.name} className="w-7 h-7 object-contain" />
               : <span className="text-xl">🌿</span>
             }
-            <span className="text-lg font-black tracking-tight text-black">
+            <span className="text-lg font-black tracking-tight text-white">
               {store?.name || "Paperbag"}
             </span>
           </Link>
@@ -131,8 +132,8 @@ export default function Navbar() {
               href={isPaperbag ? "/" : `/store/${slug}`}
               className={`px-4 py-2 text-sm font-medium transition-colors rounded-full ${
                 pathname === (isPaperbag ? "/" : `/store/${slug}`)
-                  ? "text-black"
-                  : "text-black/60 hover:text-black"
+                  ? "text-white"
+                  : "text-white/80 hover:text-white"
               }`}
             >
               Home
@@ -145,7 +146,7 @@ export default function Navbar() {
                   onMouseEnter={() => setProductsOpen(true)}
                   onClick={() => setProductsOpen(v => !v)}
                   className={`flex items-center gap-1 px-4 py-2 text-sm font-medium transition-colors rounded-full ${
-                    productsOpen ? "text-black" : "text-black/60 hover:text-black"
+                    productsOpen ? "text-white" : "text-white/80 hover:text-white"
                   }`}
                 >
                   Products
@@ -241,7 +242,7 @@ export default function Navbar() {
                 key={href}
                 href={href}
                 className={`px-4 py-2 text-sm font-medium transition-colors rounded-full ${
-                  pathname === href ? "text-white" : "text-black/60 hover:text-black"
+                  pathname === href ? "text-white" : "text-white/80 hover:text-white"
                 }`}
               >
                 {label}
@@ -256,7 +257,7 @@ export default function Navbar() {
             <div ref={searchRef} className="relative">
               <button
                 onClick={() => setSearchOpen(v => !v)}
-                className="p-2 rounded-full transition-colors text-black/50 hover:text-black hover:bg-white/08"
+                className="p-2 rounded-full transition-colors text-white/70 hover:text-white"
               >
                 <svg className="w-4 h-4" viewBox="0 0 20 20" fill="none">
                   <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" strokeWidth="1.6"/>
@@ -300,7 +301,7 @@ export default function Navbar() {
             {/* Cart */}
             <Link
               href={isPaperbag ? "/cart" : `/store/${slug}/cart`}
-              className="relative p-2 rounded-full transition-colors text-black/50 hover:text-black"
+              className="relative p-2 rounded-full transition-colors text-white/70 hover:text-white"
             >
               <svg className="w-4 h-4" viewBox="0 0 20 20" fill="none">
                 <path d="M2 2h1.5l1.8 8.5h9l1.7-6H5.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
@@ -322,7 +323,7 @@ export default function Navbar() {
               <div className="hidden md:flex items-center gap-2">
                 <Link
                   href="/login"
-                  className="text-sm font-medium transition-colors px-3 py-1.5 text-black/70 hover:text-black"
+                  className="text-sm font-medium transition-colors px-3 py-1.5 text-white/75 hover:text-white"
                 >
                   Log in
                 </Link>
@@ -360,10 +361,10 @@ export default function Navbar() {
                   >
                     {user.name?.[0]?.toUpperCase()}
                   </span>
-                  <span className="text-sm font-medium text-black/80 hidden sm:block">
+                  <span className="text-sm font-medium text-white/80 hidden sm:block">
                     {user.name?.split(" ")[0]}
                   </span>
-                  <svg className="w-3 h-3 text-black/40" viewBox="0 0 12 12" fill="none">
+                  <svg className="w-3 h-3 text-white/40" viewBox="0 0 12 12" fill="none">
                     <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </button>
@@ -435,7 +436,7 @@ export default function Navbar() {
             {/* Mobile hamburger */}
             <button
               onClick={() => setMobileOpen(v => !v)}
-              className="md:hidden p-2 rounded-full transition-colors text-black/60 hover:text-black"
+              className="md:hidden p-2 rounded-full transition-colors text-white/80 hover:text-white"
             >
               {mobileOpen
                 ? <svg className="w-5 h-5" viewBox="0 0 20 20" fill="none"><path d="M4 4l12 12M16 4L4 16" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>
@@ -462,7 +463,7 @@ export default function Navbar() {
             >
               <div className="px-5 py-5 flex flex-col gap-1">
                 <Link href={isPaperbag ? "/" : `/store/${slug}`}
-                  className="px-4 py-3 rounded-xl text-sm font-medium text-black/70 hover:text-black hover:bg-black/05 transition-colors">
+                  className="px-4 py-3 rounded-xl text-sm font-medium text-white/75 hover:text-white hover:bg-white/08 transition-colors">
                   Home
                 </Link>
 
@@ -471,7 +472,7 @@ export default function Navbar() {
                   <>
                     <button
                       onClick={() => setMobileProducts(v => !v)}
-                      className="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium text-black/70 hover:text-black hover:bg-black/05 transition-colors w-full text-left"
+                      className="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium text-white/75 hover:text-white hover:bg-white/08 transition-colors w-full text-left"
                     >
                       Products
                       <svg className="w-3.5 h-3.5 transition-transform" style={{ transform: mobileProducts ? "rotate(180deg)" : "rotate(0deg)" }} viewBox="0 0 12 12" fill="none">
@@ -497,7 +498,7 @@ export default function Navbar() {
 
                 {NAV_SIMPLE.slice(1).map(({ label, href }) => (
                   <Link key={href} href={href}
-                    className="px-4 py-3 rounded-xl text-sm font-medium text-black/70 hover:text-black hover:bg-black/05 transition-colors">
+                    className="px-4 py-3 rounded-xl text-sm font-medium text-white/75 hover:text-white hover:bg-white/08 transition-colors">
                     {label}
                   </Link>
                 ))}
@@ -506,11 +507,11 @@ export default function Navbar() {
                   <>
                     <div style={{ height: "1px", background: "rgba(255,255,255,0.07)", margin: "8px 0" }} />
                     <Link href={isPaperbag ? "/wishlist" : `/store/${slug}/wishlist`} onClick={() => setMobileOpen(false)}
-                      className="px-4 py-3 rounded-xl text-sm text-black/70 hover:text-black hover:bg-black/05 transition-colors">
+                      className="px-4 py-3 rounded-xl text-sm text-white/75 hover:text-white hover:bg-white/08 transition-colors">
                       ❤️ Wishlist
                     </Link>
                     <Link href={isPaperbag ? "/orders" : `/store/${slug}/orders`} onClick={() => setMobileOpen(false)}
-                      className="px-4 py-3 rounded-xl text-sm text-black/70 hover:text-black hover:bg-black/05 transition-colors">
+                      className="px-4 py-3 rounded-xl text-sm text-white/75 hover:text-white hover:bg-white/08 transition-colors">
                       📦 My Orders
                     </Link>
                     {isAdmin && (
