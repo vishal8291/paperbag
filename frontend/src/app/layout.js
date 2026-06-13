@@ -74,7 +74,7 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-screen flex flex-col" style={{ background: "var(--cream)" }}>
+      <body className="min-h-screen flex flex-col" style={{ background: "var(--bg-0)" }}>
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
