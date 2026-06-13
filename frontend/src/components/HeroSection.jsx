@@ -1,50 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useStore } from "../context/StoreContext";
 
-const WORDS = ["Shopping", "Gifting", "Branding", "Events", "Packaging"];
+const WORDS = ["Shopping", "Gifting", "Branding", "Events", "Packaging", "Everyone"];
 
-// Floating product card data
-const FLOATING_CARDS = [
-  {
-    id: 1,
-    name: "Luxury Kraft Tote",
-    price: "₹299",
-    tag: "Best Seller",
-    tagColor: "#52b788",
-    emoji: "🛍️",
-    delay: "0s",
-    cls: "animate-card-1",
-    style: { top: "8%", right: "2%", width: "200px" },
-  },
-  {
-    id: 2,
-    name: "Eco Gift Box Set",
-    price: "₹549",
-    tag: "New",
-    tagColor: "#c9a84c",
-    emoji: "🎁",
-    delay: "1.2s",
-    cls: "animate-card-2",
-    style: { top: "42%", right: "-2%", width: "190px" },
-  },
-  {
-    id: 3,
-    name: "Cotton Handle Bag",
-    price: "₹189",
-    tag: "Eco Pick",
-    tagColor: "#74c69d",
-    emoji: "♻️",
-    delay: "2.4s",
-    cls: "animate-card-3",
-    style: { bottom: "14%", right: "8%", width: "180px" },
-  },
-];
-
-// Order notification card
 const ORDER_NOTIF = {
   name: "Priya from Mumbai",
   action: "just placed an order",
@@ -55,6 +17,8 @@ export default function HeroSection() {
   const { store, slug } = useStore();
   const [wordIdx, setWordIdx] = useState(0);
   const [notifVisible, setNotifVisible] = useState(false);
+  const [videoError, setVideoError] = useState(false);
+  const videoRef = useRef(null);
 
   const isPaperbag = !slug || slug === "paperbag";
 
@@ -74,42 +38,81 @@ export default function HeroSection() {
 
   return (
     <section
-      className="relative min-h-[96vh] flex flex-col justify-center overflow-hidden noise"
-      style={{ background: "var(--bg-eco)", paddingTop: "72px" }}
+      className="relative min-h-[100vh] flex flex-col justify-center overflow-hidden"
+      style={{ paddingTop: "72px" }}
     >
-      {/* ── Background ambient glows ── */}
-      <div className="absolute inset-0 pointer-events-none">
-        {/* Large green radial glow bottom-left */}
+      {/* ── Video Background ── */}
+      <div className="absolute inset-0 z-0">
+        {/* HTML5 Video — drop hero-bg.mp4 in /public/ to activate */}
+        {!videoError && (
+          <video
+            ref={videoRef}
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ opacity: 0.45 }}
+            onError={() => setVideoError(true)}
+          >
+            <source src="/hero-bg.mp4" type="video/mp4" />
+            <source src="/hero-bg.webm" type="video/webm" />
+          </video>
+        )}
+
+        {/* CSS animated gradient fallback (also shown as base layer always) */}
         <div
-          className="absolute"
+          className="absolute inset-0"
           style={{
-            bottom: "-10%", left: "-5%",
-            width: "55vw", height: "55vw",
-            background: "radial-gradient(circle, rgba(82,183,136,0.10) 0%, transparent 65%)",
+            background: videoError
+              ? "linear-gradient(135deg, #080e09 0%, #0d2318 30%, #1a3a2a 60%, #080808 100%)"
+              : "#080e09",
+            animation: videoError ? "gradient-shift 8s ease-in-out infinite" : "none",
           }}
         />
-        {/* Gold glow top-right */}
+
+        {/* Ambient glows */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div
+            className="absolute"
+            style={{
+              bottom: "-10%", left: "-5%",
+              width: "60vw", height: "60vw",
+              background: "radial-gradient(circle, rgba(82,183,136,0.12) 0%, transparent 65%)",
+            }}
+          />
+          <div
+            className="absolute"
+            style={{
+              top: "5%", right: "8%",
+              width: "40vw", height: "40vw",
+              background: "radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 65%)",
+            }}
+          />
+          {/* Subtle grid overlay */}
+          <div
+            className="absolute inset-0 opacity-[0.025]"
+            style={{
+              backgroundImage:
+                "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
+              backgroundSize: "60px 60px",
+            }}
+          />
+        </div>
+
+        {/* Dark overlay to ensure text readability */}
         <div
-          className="absolute"
+          className="absolute inset-0"
           style={{
-            top: "5%", right: "10%",
-            width: "35vw", height: "35vw",
-            background: "radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 65%)",
-          }}
-        />
-        {/* Subtle grid */}
-        <div
-          className="absolute inset-0 opacity-[0.02]"
-          style={{
-            backgroundImage: "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
-            backgroundSize: "60px 60px",
+            background:
+              "linear-gradient(to bottom, rgba(8,8,8,0.55) 0%, rgba(8,8,8,0.35) 40%, rgba(8,8,8,0.7) 85%, #080808 100%)",
           }}
         />
       </div>
 
       {/* ── Main content ── */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 w-full py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[80vh]">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 w-full py-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center min-h-[76vh]">
 
           {/* Left: Text */}
           <motion.div
@@ -126,7 +129,7 @@ export default function HeroSection() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold mb-8 w-fit"
               style={{
                 background: "rgba(82,183,136,0.1)",
-                border: "1px solid rgba(82,183,136,0.25)",
+                border: "1px solid rgba(82,183,136,0.3)",
                 color: "#74c69d",
               }}
             >
@@ -135,13 +138,25 @@ export default function HeroSection() {
             </motion.div>
 
             {/* Heading */}
-            <h1 className="display-xl mb-6 select-none" style={{ lineHeight: 0.92 }}>
+            <h1
+              className="select-none mb-6"
+              style={{
+                fontSize: "clamp(2.8rem, 7vw, 6rem)",
+                lineHeight: 0.92,
+                fontWeight: 900,
+                letterSpacing: "-0.04em",
+                color: "#fff",
+              }}
+            >
               {isPaperbag ? (
                 <>
                   Be the store<br />
-                  <span style={{ color: "rgba(255,255,255,0.35)" }}>they shop from for</span>
+                  <span style={{ color: "rgba(255,255,255,0.32)" }}>they shop from for</span>
                   <br />
-                  <span className="relative inline-block overflow-hidden" style={{ height: "1.1em", verticalAlign: "bottom" }}>
+                  <span
+                    className="relative inline-block overflow-hidden"
+                    style={{ height: "1.08em", verticalAlign: "bottom" }}
+                  >
                     <AnimatePresence mode="wait">
                       <motion.span
                         key={wordIdx}
@@ -164,7 +179,7 @@ export default function HeroSection() {
             {/* Description */}
             <p
               className="text-base sm:text-lg leading-relaxed mb-10 max-w-lg"
-              style={{ color: "rgba(255,255,255,0.58)" }}
+              style={{ color: "rgba(255,255,255,0.6)" }}
             >
               {storeDesc}
             </p>
@@ -190,7 +205,11 @@ export default function HeroSection() {
                 { icon: "✋", text: "Handcrafted" },
                 { icon: "🚚", text: "Pan-India Delivery" },
               ].map(({ icon, text }) => (
-                <div key={text} className="flex items-center gap-2 text-xs font-medium" style={{ color: "rgba(255,255,255,0.4)" }}>
+                <div
+                  key={text}
+                  className="flex items-center gap-2 text-xs font-medium"
+                  style={{ color: "rgba(255,255,255,0.42)" }}
+                >
                   <span className="text-sm">{icon}</span>
                   {text}
                 </div>
@@ -198,64 +217,32 @@ export default function HeroSection() {
             </div>
           </motion.div>
 
-          {/* Right: Floating product cards (desktop only) */}
-          <div className="relative hidden lg:block h-[560px]">
-            {FLOATING_CARDS.map((card) => (
-              <motion.div
-                key={card.id}
-                initial={{ opacity: 0, scale: 0.85, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ delay: 0.4 + card.id * 0.2, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                className={`absolute dark-card p-4 ${card.cls}`}
-                style={{ ...card.style, animationDelay: card.delay }}
-              >
-                {/* Product emoji visual */}
-                <div
-                  className="w-full h-24 rounded-xl mb-3 flex items-center justify-center text-4xl"
-                  style={{ background: "rgba(255,255,255,0.04)" }}
-                >
-                  {card.emoji}
-                </div>
-                {/* Tag */}
-                <span
-                  className="text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block"
-                  style={{ background: `${card.tagColor}20`, color: card.tagColor }}
-                >
-                  {card.tag}
-                </span>
-                <p className="text-xs font-semibold text-white truncate">{card.name}</p>
-                <p className="text-sm font-black mt-0.5" style={{ color: "#e8c97a" }}>{card.price}</p>
-                {/* Stars */}
-                <div className="flex gap-0.5 mt-1.5">
-                  {[...Array(5)].map((_, i) => (
-                    <span key={i} className="text-[10px]" style={{ color: "#c9a84c" }}>★</span>
-                  ))}
-                </div>
-                {/* Add to cart btn */}
-                <button
-                  className="w-full mt-3 py-1.5 rounded-full text-[10px] font-bold text-white"
-                  style={{ background: "rgba(82,183,136,0.2)", border: "1px solid rgba(82,183,136,0.3)" }}
-                >
-                  Add to Cart
-                </button>
-              </motion.div>
-            ))}
-
-            {/* Stats badge floating */}
+          {/* Right: Floating stats + notification (desktop) */}
+          <div className="hidden lg:flex flex-col items-end gap-5">
+            {/* Stats cards */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 1.2, duration: 0.6 }}
-              className="absolute top-1/2 left-4 -translate-y-1/2 dark-card p-4 text-center"
-              style={{ width: "130px" }}
+              initial={{ opacity: 0, x: 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.5, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="grid grid-cols-2 gap-3 w-64"
             >
-              <p className="text-2xl font-black text-white">500+</p>
-              <p className="text-[10px] mt-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>Active Sellers</p>
-              <div className="flex gap-1 mt-2 justify-center">
-                {["🟢", "🟢", "🟢", "🟡"].map((c, i) => (
-                  <span key={i} className="text-[8px]">{c}</span>
-                ))}
-              </div>
+              {[
+                { val: "500+",  label: "Sellers",     color: "#52b788" },
+                { val: "12K+",  label: "Products",    color: "#c9a84c" },
+                { val: "95%",   label: "Satisfaction", color: "#74c69d" },
+                { val: "₹0",    label: "Listing Fee", color: "#e8c97a" },
+              ].map(({ val, label, color }, i) => (
+                <motion.div
+                  key={label}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.6 + i * 0.1, duration: 0.5 }}
+                  className="dark-card p-4 text-center"
+                >
+                  <p className="text-xl font-black" style={{ color }}>{val}</p>
+                  <p className="text-[10px] mt-0.5" style={{ color: "rgba(255,255,255,0.4)" }}>{label}</p>
+                </motion.div>
+              ))}
             </motion.div>
 
             {/* Live order notification */}
@@ -266,8 +253,8 @@ export default function HeroSection() {
                   animate={{ opacity: 1, y: 0, x: 0 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.5 }}
-                  className="absolute bottom-8 left-0 dark-card px-4 py-3 flex items-center gap-3"
-                  style={{ minWidth: "230px", border: "1px solid rgba(82,183,136,0.2)" }}
+                  className="dark-card px-4 py-3 flex items-center gap-3 w-64"
+                  style={{ border: "1px solid rgba(82,183,136,0.2)" }}
                 >
                   <div
                     className="w-8 h-8 rounded-full flex items-center justify-center text-sm shrink-0"
@@ -275,9 +262,9 @@ export default function HeroSection() {
                   >
                     🛒
                   </div>
-                  <div>
-                    <p className="text-xs font-semibold text-white">{ORDER_NOTIF.name}</p>
-                    <p className="text-[10px]" style={{ color: "rgba(255,255,255,0.45)" }}>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-semibold text-white truncate">{ORDER_NOTIF.name}</p>
+                    <p className="text-[10px]" style={{ color: "rgba(255,255,255,0.4)" }}>
                       {ORDER_NOTIF.action} · {ORDER_NOTIF.time}
                     </p>
                   </div>
@@ -292,14 +279,36 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* ── Bottom curve transition ── */}
+      {/* ── Scroll indicator ── */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.5 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10"
+      >
+        <p className="text-[10px] font-medium uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.3)" }}>
+          Scroll
+        </p>
+        <motion.div
+          animate={{ y: [0, 6, 0] }}
+          transition={{ repeat: Infinity, duration: 1.5 }}
+          className="w-px h-8"
+          style={{ background: "linear-gradient(to bottom, rgba(255,255,255,0.3), transparent)" }}
+        />
+      </motion.div>
+
+      {/* ── Bottom curve ── */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-10"
-        style={{
-          background: "var(--bg-0)",
-          borderRadius: "40px 40px 0 0",
-        }}
+        className="absolute bottom-0 left-0 right-0 h-12"
+        style={{ background: "var(--bg-0)", borderRadius: "48px 48px 0 0" }}
       />
+
+      <style>{`
+        @keyframes gradient-shift {
+          0%, 100% { filter: hue-rotate(0deg); }
+          50% { filter: hue-rotate(15deg); }
+        }
+      `}</style>
     </section>
   );
 }

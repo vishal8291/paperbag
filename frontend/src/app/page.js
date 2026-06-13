@@ -2,6 +2,8 @@
 
 import React from "react";
 import HeroSection from "../components/HeroSection";
+import ImageCarousel from "../components/ImageCarousel";
+import FeatureImages from "../components/FeatureImages";
 import WhyChooseUs from "../components/WhyChooseUs";
 import CategoriesSection from "../components/CategoriesSection";
 import HowItWorks from "../components/HowItWorks";
@@ -28,6 +30,8 @@ export default function Home() {
   return (
     <div style={{ background: "var(--bg-0)" }}>
       <HeroSection />
+      <ImageCarousel />
+      <FeatureImages />
       <ProductCollection />
       <WhyChooseUs />
       <CategoriesSection />
