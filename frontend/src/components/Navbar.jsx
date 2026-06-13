@@ -9,6 +9,41 @@ import { useUser }   from "../context/UserContext";
 import { useStore }  from "../context/StoreContext";
 import { useRouter, usePathname } from "next/navigation";
 
+const PRODUCTS_MENU = [
+  {
+    heading: "Shop by Category",
+    color: "#52b788",
+    links: [
+      { icon: "🛍️", label: "Shopping Bags" },
+      { icon: "🎁", label: "Gift Bags" },
+      { icon: "📦", label: "Kraft Paper" },
+      { icon: "💼", label: "Branded Bags" },
+      { icon: "👗", label: "Fashion" },
+    ],
+  },
+  {
+    heading: "Collections",
+    color: "#c9a84c",
+    links: [
+      { icon: "✨", label: "New Arrivals" },
+      { icon: "🔥", label: "Bestsellers" },
+      { icon: "🌿", label: "Eco Picks" },
+      { icon: "🎨", label: "Custom Print" },
+      { icon: "💍", label: "Luxury Gift" },
+    ],
+  },
+  {
+    heading: "For Sellers",
+    color: "#74c69d",
+    links: [
+      { icon: "🚀", label: "Start Selling", href: "/seller/register" },
+      { icon: "📊", label: "Seller Dashboard", href: "/seller/dashboard" },
+      { icon: "💰", label: "Pricing", href: "/pricing" },
+      { icon: "🤖", label: "Leaf AI", href: "/" },
+    ],
+  },
+];
+
 export default function Navbar() {
   const { store, slug } = useStore();
   const { getCartCount }              = useCart();
@@ -17,91 +52,217 @@ export default function Navbar() {
   const router                        = useRouter();
   const pathname                      = usePathname();
 
-  const [scrolled,     setScrolled]     = useState(false);
-  const [mobileOpen,   setMobileOpen]   = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [searchOpen,   setSearchOpen]   = useState(false);
-  const dropdownRef = useRef(null);
+  const [scrolled,      setScrolled]      = useState(false);
+  const [mobileOpen,    setMobileOpen]    = useState(false);
+  const [productsOpen,  setProductsOpen]  = useState(false);
+  const [userOpen,      setUserOpen]      = useState(false);
+  const [searchOpen,    setSearchOpen]    = useState(false);
+  const [mobileProducts, setMobileProducts] = useState(false);
+
+  const productsRef = useRef(null);
+  const userRef     = useRef(null);
   const searchRef   = useRef(null);
 
-  const NAV_LINKS = [
-    { label: "Home",        href: slug ? `/store/${slug}` : "/" },
-    { label: "Products",    href: slug ? `/store/${slug}/products` : "/products" },
-    { label: "Track Order", href: slug ? `/store/${slug}/track-order` : "/track-order" },
-    { label: "FAQ",         href: slug ? `/store/${slug}/faq` : "/faq" },
-    { label: "Contact",     href: slug ? `/store/${slug}/contact` : "/contact" },
-  ];
+  const isPaperbag = !slug || slug === "paperbag";
 
-  // Scroll effect
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close dropdown on outside click
   useEffect(() => {
     const handler = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) setDropdownOpen(false);
-      if (searchRef.current && !searchRef.current.contains(e.target)) setSearchOpen(false);
+      if (productsRef.current && !productsRef.current.contains(e.target)) setProductsOpen(false);
+      if (userRef.current     && !userRef.current.contains(e.target))     setUserOpen(false);
+      if (searchRef.current   && !searchRef.current.contains(e.target))   setSearchOpen(false);
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  // Close mobile on route change
-  useEffect(() => { setMobileOpen(false); setDropdownOpen(false); }, [pathname]);
+  useEffect(() => {
+    setMobileOpen(false);
+    setProductsOpen(false);
+    setUserOpen(false);
+  }, [pathname]);
 
-  const handleLogout = () => { logout(); router.push(slug ? `/store/${slug}` : "/"); };
-
+  const handleLogout = () => { logout(); router.push(isPaperbag ? "/" : `/store/${slug}`); };
   const cartCount = getCartCount();
+
+  const NAV_SIMPLE = [
+    { label: "Home",        href: isPaperbag ? "/" : `/store/${slug}` },
+    { label: "Track Order", href: isPaperbag ? "/track-order" : `/store/${slug}/track-order` },
+    { label: "FAQ",         href: isPaperbag ? "/faq" : `/store/${slug}/faq` },
+    { label: "Contact",     href: isPaperbag ? "/contact" : `/store/${slug}/contact` },
+  ];
 
   return (
     <>
       <header
-        className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+        className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
         style={{
-          padding: scrolled ? "8px 0" : "16px 0",
-          background: scrolled ? "rgba(8,8,8,0.85)" : "transparent",
-          backdropFilter: scrolled ? "blur(20px)" : "none",
-          borderBottom: scrolled ? "1px solid rgba(255,255,255,0.07)" : "none",
+          padding: scrolled ? "0" : "0",
+          background: scrolled ? "rgba(6,6,6,0.92)" : "transparent",
+          backdropFilter: scrolled ? "blur(24px)" : "none",
+          borderBottom: scrolled ? "1px solid rgba(255,255,255,0.06)" : "none",
         }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-4">
+        <div className="max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between h-16 gap-6">
 
           {/* ── Logo ── */}
-          <Link href={slug ? `/store/${slug}` : "/"} className="flex items-center gap-2 shrink-0">
-            {store?.logo ? (
-              <img src={store.logo} alt={store.name} className="w-8 h-8 object-contain" />
-            ) : (
-              <span className="text-2xl">🌿</span>
-            )}
-            <span className="text-xl font-black tracking-tight text-white">
+          <Link
+            href={isPaperbag ? "/" : `/store/${slug}`}
+            className="flex items-center gap-2 shrink-0"
+          >
+            {store?.logo
+              ? <img src={store.logo} alt={store.name} className="w-7 h-7 object-contain" />
+              : <span className="text-xl">🌿</span>
+            }
+            <span className="text-lg font-black tracking-tight text-white">
               {store?.name || "Paperbag"}
             </span>
           </Link>
 
           {/* ── Desktop Nav ── */}
-          <nav className="hidden md:flex items-center gap-1">
-            {NAV_LINKS.map(({ label, href }) => (
-              <Link key={href} href={href}
-                className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
-                  pathname === href
-                    ? "bg-white/10 text-white"
-                    : "text-white/60 hover:text-white hover:bg-white/5"
-                }`}>
+          <nav className="hidden md:flex items-center gap-0.5">
+
+            {/* Home */}
+            <Link
+              href={isPaperbag ? "/" : `/store/${slug}`}
+              className={`px-4 py-2 text-sm font-medium transition-colors rounded-full ${
+                pathname === (isPaperbag ? "/" : `/store/${slug}`)
+                  ? "text-white"
+                  : "text-white/60 hover:text-white"
+              }`}
+            >
+              Home
+            </Link>
+
+            {/* Products — mega dropdown */}
+            {isPaperbag && (
+              <div ref={productsRef} className="relative">
+                <button
+                  onMouseEnter={() => setProductsOpen(true)}
+                  onClick={() => setProductsOpen(v => !v)}
+                  className={`flex items-center gap-1 px-4 py-2 text-sm font-medium transition-colors rounded-full ${
+                    productsOpen ? "text-white" : "text-white/60 hover:text-white"
+                  }`}
+                >
+                  Products
+                  <svg
+                    className="w-3.5 h-3.5 transition-transform duration-200"
+                    style={{ transform: productsOpen ? "rotate(180deg)" : "rotate(0deg)" }}
+                    viewBox="0 0 12 12" fill="none"
+                  >
+                    <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
+
+                <AnimatePresence>
+                  {productsOpen && (
+                    <motion.div
+                      onMouseLeave={() => setProductsOpen(false)}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 12 }}
+                      transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[680px]"
+                      style={{
+                        background: "rgba(10,10,10,0.97)",
+                        border: "1px solid rgba(255,255,255,0.08)",
+                        borderRadius: "20px",
+                        boxShadow: "0 24px 80px rgba(0,0,0,0.6)",
+                        backdropFilter: "blur(30px)",
+                        padding: "28px",
+                      }}
+                    >
+                      <div className="grid grid-cols-3 gap-8">
+                        {PRODUCTS_MENU.map(({ heading, color, links }) => (
+                          <div key={heading}>
+                            <p
+                              className="text-[10px] font-bold uppercase tracking-widest mb-4"
+                              style={{ color }}
+                            >
+                              {heading}
+                            </p>
+                            <ul className="space-y-1">
+                              {links.map(({ icon, label, href }) => (
+                                <li key={label}>
+                                  <Link
+                                    href={href || `/products?cat=${encodeURIComponent(label)}`}
+                                    onClick={() => setProductsOpen(false)}
+                                    className="flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition-all group"
+                                    style={{ color: "rgba(255,255,255,0.65)" }}
+                                    onMouseEnter={e => {
+                                      e.currentTarget.style.background = "rgba(255,255,255,0.06)";
+                                      e.currentTarget.style.color = "#fff";
+                                    }}
+                                    onMouseLeave={e => {
+                                      e.currentTarget.style.background = "transparent";
+                                      e.currentTarget.style.color = "rgba(255,255,255,0.65)";
+                                    }}
+                                  >
+                                    <span className="text-base w-5 text-center">{icon}</span>
+                                    <span className="font-medium">{label}</span>
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Bottom CTA strip */}
+                      <div
+                        className="mt-6 pt-5 flex items-center justify-between"
+                        style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}
+                      >
+                        <p className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>
+                          500+ eco sellers · 12K+ products · Pan-India delivery
+                        </p>
+                        <Link
+                          href="/products"
+                          onClick={() => setProductsOpen(false)}
+                          className="text-xs font-bold flex items-center gap-1 transition-colors"
+                          style={{ color: "#74c69d" }}
+                        >
+                          Browse all →
+                        </Link>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
+
+            {/* Simple links */}
+            {NAV_SIMPLE.slice(1).map(({ label, href }) => (
+              <Link
+                key={href}
+                href={href}
+                className={`px-4 py-2 text-sm font-medium transition-colors rounded-full ${
+                  pathname === href ? "text-white" : "text-white/60 hover:text-white"
+                }`}
+              >
                 {label}
               </Link>
             ))}
           </nav>
 
-          {/* ── Actions ── */}
+          {/* ── Right actions ── */}
           <div className="flex items-center gap-2">
-            {/* Search toggle */}
+
+            {/* Search */}
             <div ref={searchRef} className="relative">
-              <button onClick={() => setSearchOpen(!searchOpen)}
-                className="p-2 rounded-full hover:bg-green-50 transition text-gray-600 hover:text-green-800">
-                🔍
+              <button
+                onClick={() => setSearchOpen(v => !v)}
+                className="p-2 rounded-full transition-colors text-white/50 hover:text-white hover:bg-white/08"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 20 20" fill="none">
+                  <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" strokeWidth="1.6"/>
+                  <path d="M13 13l4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+                </svg>
               </button>
               <AnimatePresence>
                 {searchOpen && (
@@ -110,17 +271,27 @@ export default function Navbar() {
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: 8 }}
                     transition={{ duration: 0.15 }}
-                    className="absolute right-0 top-12 w-72 glass rounded-2xl shadow-xl p-3"
+                    className="absolute right-0 top-12 w-72 rounded-2xl shadow-2xl p-3"
+                    style={{
+                      background: "rgba(12,12,12,0.97)",
+                      border: "1px solid rgba(255,255,255,0.08)",
+                      backdropFilter: "blur(24px)",
+                    }}
                   >
                     <input
                       autoFocus
                       type="text"
                       placeholder="Search products..."
                       value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      onKeyDown={(e) => { if (e.key === "Enter") { router.push(slug ? `/store/${slug}/products` : "/products"); setSearchOpen(false); }}}
-                      className="w-full bg-transparent border border-green-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none"
-                      style={{ borderColor: "var(--green-400)" }}
+                      onChange={e => setSearchTerm(e.target.value)}
+                      onKeyDown={e => {
+                        if (e.key === "Enter") {
+                          router.push(isPaperbag ? "/products" : `/store/${slug}/products`);
+                          setSearchOpen(false);
+                        }
+                      }}
+                      className="w-full bg-transparent px-4 py-2.5 text-sm text-white focus:outline-none rounded-xl"
+                      style={{ border: "1px solid rgba(82,183,136,0.3)", color: "#fff" }}
                     />
                   </motion.div>
                 )}
@@ -128,80 +299,132 @@ export default function Navbar() {
             </div>
 
             {/* Cart */}
-            <Link href={slug ? `/store/${slug}/cart` : "/cart"} className="relative p-2 rounded-full hover:bg-green-50 transition text-gray-600 hover:text-green-800">
-              🛒
+            <Link
+              href={isPaperbag ? "/cart" : `/store/${slug}/cart`}
+              className="relative p-2 rounded-full transition-colors text-white/50 hover:text-white"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 20 20" fill="none">
+                <path d="M2 2h1.5l1.8 8.5h9l1.7-6H5.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                <circle cx="8" cy="17" r="1" fill="currentColor"/>
+                <circle cx="15" cy="17" r="1" fill="currentColor"/>
+              </svg>
               {cartCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 w-5 h-5 rounded-full text-white text-xs font-bold flex items-center justify-center"
-                  style={{ background: "var(--green-800)" }}>
+                <span
+                  className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full text-white text-[9px] font-bold flex items-center justify-center"
+                  style={{ background: "#52b788" }}
+                >
                   {cartCount}
                 </span>
               )}
             </Link>
 
-            {/* User / Auth */}
+            {/* Auth */}
             {!user ? (
-              <Link href="/login" className="btn-primary text-sm py-2 px-5">
-                Sign In
-              </Link>
+              <div className="hidden md:flex items-center gap-2">
+                <Link
+                  href="/login"
+                  className="text-sm font-medium transition-colors px-3 py-1.5"
+                  style={{ color: "rgba(255,255,255,0.7)" }}
+                >
+                  Log in
+                </Link>
+                <Link
+                  href="/seller/register"
+                  className="text-sm font-bold px-5 py-2 rounded-full transition-all"
+                  style={{
+                    background: "#fff",
+                    color: "#080808",
+                  }}
+                  onMouseEnter={e => (e.currentTarget.style.background = "#e8e8e8")}
+                  onMouseLeave={e => (e.currentTarget.style.background = "#fff")}
+                >
+                  Start for free
+                </Link>
+              </div>
             ) : (
-              <div className="relative" ref={dropdownRef}>
-                <button onClick={() => setDropdownOpen(!dropdownOpen)}
-                  className="flex items-center gap-2 glass rounded-full px-3 py-1.5 hover:shadow-md transition">
-                  {user.avatar
-                    ? <img
-                        src={user.avatar}
-                        alt=""
-                        className="w-7 h-7 rounded-full object-cover"
-                        referrerPolicy="no-referrer"
-                        onError={(e) => {
-                          e.currentTarget.style.display = "none";
-                          e.currentTarget.nextSibling.style.display = "flex";
-                        }}
-                      />
-                    : null}
-                  <span className="w-7 h-7 rounded-full items-center justify-center text-sm font-bold text-white"
-                    style={{ background: "var(--green-800)", display: user.avatar ? "none" : "flex" }}>
+              <div className="relative" ref={userRef}>
+                <button
+                  onClick={() => setUserOpen(v => !v)}
+                  className="flex items-center gap-2 rounded-full px-2 py-1.5 transition-colors hover:bg-white/08"
+                >
+                  {user.avatar ? (
+                    <img
+                      src={user.avatar}
+                      alt=""
+                      className="w-7 h-7 rounded-full object-cover"
+                      referrerPolicy="no-referrer"
+                      onError={e => { e.currentTarget.style.display = "none"; e.currentTarget.nextSibling.style.display = "flex"; }}
+                    />
+                  ) : null}
+                  <span
+                    className="w-7 h-7 rounded-full items-center justify-center text-xs font-bold text-white"
+                    style={{ background: "var(--green-800)", display: user.avatar ? "none" : "flex" }}
+                  >
                     {user.name?.[0]?.toUpperCase()}
                   </span>
-                  <span className="text-sm font-semibold text-gray-800 hidden sm:block">
+                  <span className="text-sm font-medium text-white/80 hidden sm:block">
                     {user.name?.split(" ")[0]}
                   </span>
-                  <span className="text-gray-400 text-xs">{dropdownOpen ? "▲" : "▼"}</span>
+                  <svg className="w-3 h-3 text-white/40" viewBox="0 0 12 12" fill="none">
+                    <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
                 </button>
 
                 <AnimatePresence>
-                  {dropdownOpen && (
+                  {userOpen && (
                     <motion.div
                       initial={{ opacity: 0, y: 8, scale: 0.96 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 8, scale: 0.96 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute right-0 top-12 w-56 glass rounded-2xl shadow-2xl overflow-hidden"
+                      className="absolute right-0 top-12 w-52 overflow-hidden rounded-2xl shadow-2xl"
+                      style={{
+                        background: "rgba(10,10,10,0.97)",
+                        border: "1px solid rgba(255,255,255,0.08)",
+                        backdropFilter: "blur(24px)",
+                      }}
                     >
-                      <div className="px-4 py-3 border-b border-gray-100">
-                        <p className="font-bold text-sm text-gray-900">{user.name}</p>
-                        <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                      <div className="px-4 py-3" style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
+                        <p className="font-bold text-sm text-white">{user.name}</p>
+                        <p className="text-xs truncate" style={{ color: "rgba(255,255,255,0.4)" }}>{user.email}</p>
                       </div>
                       {[
-                        { icon: "👤", label: "My Profile",    href: "/user/profile" },
-                        { icon: "📦", label: "My Orders",     href: slug ? `/store/${slug}/orders` : "/orders" },
-                        { icon: "❤️",  label: "Wishlist",     href: slug ? `/store/${slug}/wishlist` : "/wishlist" },
+                        { icon: "👤", label: "My Profile",  href: "/user/profile" },
+                        { icon: "📦", label: "My Orders",   href: isPaperbag ? "/orders" : `/store/${slug}/orders` },
+                        { icon: "❤️",  label: "Wishlist",   href: isPaperbag ? "/wishlist" : `/store/${slug}/wishlist` },
                       ].map(({ icon, label, href }) => (
-                        <Link key={href} href={href}
-                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 transition">
+                        <Link
+                          key={href}
+                          href={href}
+                          onClick={() => setUserOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm transition-colors"
+                          style={{ color: "rgba(255,255,255,0.65)" }}
+                          onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.05)"; e.currentTarget.style.color = "#fff"; }}
+                          onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "rgba(255,255,255,0.65)"; }}
+                        >
                           <span>{icon}</span>{label}
                         </Link>
                       ))}
                       {isAdmin && (
-                        <Link href="/admin"
-                          className="flex items-center gap-3 px-4 py-2.5 text-sm font-semibold hover:bg-yellow-50 transition"
-                          style={{ color: "var(--gold)" }}>
+                        <Link
+                          href="/admin"
+                          onClick={() => setUserOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm font-semibold transition-colors"
+                          style={{ color: "var(--gold)" }}
+                          onMouseEnter={e => (e.currentTarget.style.background = "rgba(201,168,76,0.08)")}
+                          onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                        >
                           ⚙️ Admin Dashboard
                         </Link>
                       )}
-                      <div className="border-t border-gray-100">
-                        <button onClick={handleLogout}
-                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition font-semibold">
+                      <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+                        <button
+                          onClick={handleLogout}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold transition-colors"
+                          style={{ color: "#f87171" }}
+                          onMouseEnter={e => (e.currentTarget.style.background = "rgba(248,113,113,0.08)")}
+                          onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                        >
                           🚪 Logout
                         </button>
                       </div>
@@ -212,9 +435,14 @@ export default function Navbar() {
             )}
 
             {/* Mobile hamburger */}
-            <button onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden p-2 rounded-full hover:bg-green-50 transition text-gray-700">
-              {mobileOpen ? "✕" : "☰"}
+            <button
+              onClick={() => setMobileOpen(v => !v)}
+              className="md:hidden p-2 rounded-full transition-colors text-white/60 hover:text-white"
+            >
+              {mobileOpen
+                ? <svg className="w-5 h-5" viewBox="0 0 20 20" fill="none"><path d="M4 4l12 12M16 4L4 16" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>
+                : <svg className="w-5 h-5" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>
+              }
             </button>
           </div>
         </div>
@@ -227,31 +455,102 @@ export default function Navbar() {
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.25 }}
-              className="md:hidden overflow-hidden glass border-t border-white/30"
+              className="md:hidden overflow-hidden"
+              style={{
+                background: "rgba(8,8,8,0.97)",
+                borderTop: "1px solid rgba(255,255,255,0.07)",
+                backdropFilter: "blur(24px)",
+              }}
             >
-              <div className="px-4 py-4 flex flex-col gap-1">
-                {NAV_LINKS.map(({ label, href }) => (
+              <div className="px-5 py-5 flex flex-col gap-1">
+                <Link href={isPaperbag ? "/" : `/store/${slug}`}
+                  className="px-4 py-3 rounded-xl text-sm font-medium text-white/70 hover:text-white hover:bg-white/05 transition-colors">
+                  Home
+                </Link>
+
+                {/* Mobile Products accordion */}
+                {isPaperbag && (
+                  <>
+                    <button
+                      onClick={() => setMobileProducts(v => !v)}
+                      className="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium text-white/70 hover:text-white hover:bg-white/05 transition-colors w-full text-left"
+                    >
+                      Products
+                      <svg className="w-3.5 h-3.5 transition-transform" style={{ transform: mobileProducts ? "rotate(180deg)" : "rotate(0deg)" }} viewBox="0 0 12 12" fill="none">
+                        <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </button>
+                    {mobileProducts && (
+                      <div className="pl-4 pb-2 space-y-0.5">
+                        {PRODUCTS_MENU.flatMap(g => g.links).map(({ icon, label, href }) => (
+                          <Link
+                            key={label}
+                            href={href || `/products?cat=${encodeURIComponent(label)}`}
+                            onClick={() => setMobileOpen(false)}
+                            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-white/55 hover:text-white hover:bg-white/05 transition-colors"
+                          >
+                            <span>{icon}</span>{label}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {NAV_SIMPLE.slice(1).map(({ label, href }) => (
                   <Link key={href} href={href}
-                    className={`px-4 py-3 rounded-xl text-sm font-semibold transition ${
-                      pathname === href ? "bg-green-800 text-white" : "text-gray-700 hover:bg-green-50"
-                    }`}>
+                    className="px-4 py-3 rounded-xl text-sm font-medium text-white/70 hover:text-white hover:bg-white/05 transition-colors">
                     {label}
                   </Link>
                 ))}
-                {user && <>
-                  <Link href={slug ? `/store/${slug}/wishlist` : "/wishlist"} className="px-4 py-3 rounded-xl text-sm text-gray-700 hover:bg-green-50">❤️ Wishlist</Link>
-                  <Link href={slug ? `/store/${slug}/orders` : "/orders"} className="px-4 py-3 rounded-xl text-sm text-gray-700 hover:bg-green-50">📦 My Orders</Link>
-                  {isAdmin && <Link href="/admin" className="px-4 py-3 rounded-xl text-sm font-semibold hover:bg-yellow-50" style={{color:"var(--gold)"}}>⚙️ Admin</Link>}
-                  <button onClick={handleLogout} className="px-4 py-3 rounded-xl text-sm text-red-500 hover:bg-red-50 text-left font-semibold">🚪 Logout</button>
-                </>}
-                {!user && <Link href="/login" className="btn-primary text-center mt-2">Sign In</Link>}
+
+                {user && (
+                  <>
+                    <div style={{ height: "1px", background: "rgba(255,255,255,0.07)", margin: "8px 0" }} />
+                    <Link href={isPaperbag ? "/wishlist" : `/store/${slug}/wishlist`} onClick={() => setMobileOpen(false)}
+                      className="px-4 py-3 rounded-xl text-sm text-white/70 hover:text-white hover:bg-white/05 transition-colors">
+                      ❤️ Wishlist
+                    </Link>
+                    <Link href={isPaperbag ? "/orders" : `/store/${slug}/orders`} onClick={() => setMobileOpen(false)}
+                      className="px-4 py-3 rounded-xl text-sm text-white/70 hover:text-white hover:bg-white/05 transition-colors">
+                      📦 My Orders
+                    </Link>
+                    {isAdmin && (
+                      <Link href="/admin" onClick={() => setMobileOpen(false)}
+                        className="px-4 py-3 rounded-xl text-sm font-semibold hover:bg-white/05 transition-colors"
+                        style={{ color: "var(--gold)" }}>
+                        ⚙️ Admin
+                      </Link>
+                    )}
+                    <button onClick={handleLogout}
+                      className="px-4 py-3 rounded-xl text-sm font-semibold text-left hover:bg-white/05 transition-colors"
+                      style={{ color: "#f87171" }}>
+                      🚪 Logout
+                    </button>
+                  </>
+                )}
+
+                {!user && (
+                  <div className="flex gap-3 mt-3">
+                    <Link href="/login" onClick={() => setMobileOpen(false)}
+                      className="flex-1 text-center py-2.5 rounded-xl text-sm font-medium border transition-colors text-white/70 hover:text-white"
+                      style={{ border: "1px solid rgba(255,255,255,0.15)" }}>
+                      Log in
+                    </Link>
+                    <Link href="/seller/register" onClick={() => setMobileOpen(false)}
+                      className="flex-1 text-center py-2.5 rounded-xl text-sm font-bold transition-colors"
+                      style={{ background: "#fff", color: "#080808" }}>
+                      Start for free
+                    </Link>
+                  </div>
+                )}
               </div>
             </motion.div>
           )}
         </AnimatePresence>
       </header>
 
-      {/* Navbar spacer (only when not scrolled to keep hero full-screen) */}
+      {/* Spacer */}
       <div className="h-16" />
     </>
   );
