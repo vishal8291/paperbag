@@ -10,6 +10,7 @@ import { CartProvider }   from "../context/CartContext";
 import { SearchProvider } from "../context/SearchContext";
 import { UserProvider }   from "../context/UserContext";
 import { ToastProvider }  from "../context/ToastContext";
+import { StoreProvider }  from "../context/StoreContext";
 
 export default function ClientLayout({ children }) {
   return (
@@ -17,7 +18,13 @@ export default function ClientLayout({ children }) {
       <UserProvider>
         <CartProvider>
           <SearchProvider>
-            {children}
+            <StoreProvider>
+              <Navbar />
+              {children}
+              <Footer />
+              <AIChatWidget />
+              <BackToTop />
+            </StoreProvider>
           </SearchProvider>
         </CartProvider>
       </UserProvider>
