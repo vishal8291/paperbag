@@ -1,34 +1,32 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 
 const SLIDES = [
-  { src: "/bag1.png",      alt: "Eco Tote Bag",        label: "Eco Tote" },
-  { src: "/bag2.png",      alt: "Craft Paper Bag",      label: "Kraft Classic" },
-  { src: "/bag3.png",      alt: "Gift Bag",             label: "Gift Luxury" },
-  { src: "/bag4.png",      alt: "Shopping Bag",         label: "Shopping Bag" },
-  { src: "/backpack.png",  alt: "Eco Backpack",         label: "Eco Backpack" },
-  { src: "/tote.png",      alt: "Canvas Tote",          label: "Canvas Tote" },
-  { src: "/custom.jpeg",   alt: "Custom Printed Bag",   label: "Custom Print" },
-  { src: "/fashion.png",   alt: "Fashion Bag",          label: "Fashion Edit" },
-  { src: "/eco.png",       alt: "Biodegradable Bag",    label: "Biodegradable" },
-  { src: "/3d.png",        alt: "3D Designer Bag",      label: "3D Designer" },
+  { src: "/backpack.png",  alt: "Eco Backpack",       label: "Eco Backpack",    tag: "New" },
+  { src: "/tote.png",      alt: "Canvas Tote",         label: "Canvas Tote",     tag: "Bestseller" },
+  { src: "/custom.jpeg",   alt: "Custom Printed Bag",  label: "Custom Print",    tag: "Popular" },
+  { src: "/fashion.png",   alt: "Fashion Bag",         label: "Fashion Edit",    tag: "Trending" },
+  { src: "/bag1.png",      alt: "Eco Tote Bag",        label: "Eco Tote",        tag: "Eco" },
+  { src: "/bag2.png",      alt: "Kraft Paper Bag",     label: "Kraft Classic",   tag: "Classic" },
+  { src: "/bag3.png",      alt: "Gift Bag",            label: "Gift Luxury",     tag: "Gift" },
+  { src: "/bag4.png",      alt: "Shopping Bag",        label: "Shopping Bag",    tag: "Sale" },
+  { src: "/eco.png",       alt: "Biodegradable Bag",   label: "Biodegradable",   tag: "Green" },
+  { src: "/3d.png",        alt: "3D Designer Bag",     label: "3D Designer",     tag: "Limited" },
 ];
 
-// Duplicate for seamless infinite loop
 const ITEMS = [...SLIDES, ...SLIDES];
 
 export default function ImageCarousel() {
   return (
     <section
-      className="relative overflow-hidden py-16"
-      style={{ background: "var(--bg-0)" }}
+      className="relative overflow-hidden"
+      style={{ background: "var(--bg-0)", padding: "5rem 0 6rem" }}
     >
-      {/* Section label */}
-      <div className="text-center mb-10 px-6">
+      {/* Header */}
+      <div className="text-center mb-12 px-6">
         <span
-          className="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4"
+          className="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-5"
           style={{
             background: "rgba(82,183,136,0.1)",
             color: "#74c69d",
@@ -38,8 +36,12 @@ export default function ImageCarousel() {
           Our Collection
         </span>
         <h2
-          className="text-2xl sm:text-3xl font-black text-white"
-          style={{ letterSpacing: "-0.03em" }}
+          className="font-black text-white"
+          style={{
+            fontSize: "clamp(2rem, 5vw, 3.5rem)",
+            lineHeight: 1,
+            letterSpacing: "-0.04em",
+          }}
         >
           Bags for every{" "}
           <span className="text-gradient">occasion</span>
@@ -48,67 +50,85 @@ export default function ImageCarousel() {
 
       {/* Fade edges */}
       <div
-        className="absolute left-0 top-0 bottom-0 w-24 z-10 pointer-events-none"
-        style={{
-          background: "linear-gradient(to right, var(--bg-0), transparent)",
-        }}
+        className="absolute left-0 top-0 bottom-0 w-32 z-10 pointer-events-none"
+        style={{ background: "linear-gradient(to right, var(--bg-0) 20%, transparent)" }}
       />
       <div
-        className="absolute right-0 top-0 bottom-0 w-24 z-10 pointer-events-none"
-        style={{
-          background: "linear-gradient(to left, var(--bg-0), transparent)",
-        }}
+        className="absolute right-0 top-0 bottom-0 w-32 z-10 pointer-events-none"
+        style={{ background: "linear-gradient(to left, var(--bg-0) 20%, transparent)" }}
       />
 
-      {/* Scrolling track — no scrollbar, CSS animation only */}
+      {/* Track */}
       <div className="overflow-hidden">
         <div
-          className="flex gap-4"
+          className="flex"
           style={{
+            gap: "20px",
             width: "max-content",
-            animation: "carousel-scroll 30s linear infinite",
+            animation: "carousel-scroll 40s linear infinite",
           }}
         >
           {ITEMS.map((item, i) => (
             <div
               key={i}
-              className="relative shrink-0 rounded-2xl overflow-hidden group cursor-pointer"
+              className="relative shrink-0 overflow-hidden cursor-pointer group"
               style={{
-                width: "220px",
-                height: "280px",
-                background: "rgba(255,255,255,0.03)",
-                border: "1px solid rgba(255,255,255,0.07)",
-                transition: "transform 0.3s ease, border-color 0.3s ease",
+                width: "clamp(280px, 28vw, 420px)",
+                height: "clamp(360px, 36vw, 520px)",
+                borderRadius: "20px",
+                background: "#111",
               }}
             >
               <img
                 src={item.src}
                 alt={item.alt}
-                className="w-full h-full object-cover"
-                style={{ transition: "transform 0.5s ease" }}
-                onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.07)")}
+                className="w-full h-full"
+                style={{
+                  objectFit: "cover",
+                  transition: "transform 0.6s cubic-bezier(0.16,1,0.3,1)",
+                  display: "block",
+                }}
+                onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.06)")}
                 onMouseLeave={e => (e.currentTarget.style.transform = "scale(1)")}
                 onError={e => {
                   e.currentTarget.style.display = "none";
                   e.currentTarget.nextSibling.style.display = "flex";
                 }}
               />
-              {/* Fallback placeholder */}
+
+              {/* Fallback */}
               <div
-                className="absolute inset-0 items-center justify-center text-4xl"
+                className="absolute inset-0 items-center justify-center text-5xl"
                 style={{ display: "none", background: "rgba(82,183,136,0.06)" }}
               >
                 🛍️
               </div>
 
-              {/* Label overlay */}
+              {/* Bottom gradient + label */}
               <div
-                className="absolute bottom-0 left-0 right-0 px-4 py-3"
+                className="absolute inset-0 flex flex-col justify-end p-6"
                 style={{
-                  background: "linear-gradient(to top, rgba(8,8,8,0.85), transparent)",
+                  background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.1) 45%, transparent 70%)",
+                  pointerEvents: "none",
                 }}
               >
-                <p className="text-xs font-semibold text-white">{item.label}</p>
+                {/* Tag pill */}
+                <span
+                  className="inline-block text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full mb-2 w-fit"
+                  style={{
+                    background: "rgba(82,183,136,0.2)",
+                    color: "#74c69d",
+                    border: "1px solid rgba(82,183,136,0.3)",
+                  }}
+                >
+                  {item.tag}
+                </span>
+                <p
+                  className="font-bold text-white"
+                  style={{ fontSize: "1.15rem", letterSpacing: "-0.02em" }}
+                >
+                  {item.label}
+                </p>
               </div>
             </div>
           ))}
