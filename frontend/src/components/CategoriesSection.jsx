@@ -41,7 +41,18 @@ export default function CategoriesSection() {
       className="relative overflow-hidden"
       style={{ background: "var(--bg-1)", padding: "7rem 0" }}
     >
-      {/* Ambient glow */}
+      {/* store.png background */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: "url('/store.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          opacity: 0.12,
+        }}
+      />
+      {/* Dark overlay so star stays readable */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
