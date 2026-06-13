@@ -43,27 +43,11 @@ export default function HeroSection() {
     >
       {/* ── Video Background ── */}
       <div className="absolute inset-0 z-0">
-        {/* HTML5 Video — drop hero-bg.mp4 in /public/ to activate */}
-        {!videoError && (
-          <video
-            ref={videoRef}
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ opacity: 0.45 }}
-            onError={() => setVideoError(true)}
-          >
-            <source src="/hero-bg.mp4" type="video/mp4" />
-            <source src="/hero-bg.webm" type="video/webm" />
-          </video>
-        )}
-
-        {/* CSS animated gradient fallback (also shown as base layer always) */}
+        {/* Base dark bg — always behind everything */}
         <div
           className="absolute inset-0"
           style={{
+            zIndex: 0,
             background: videoError
               ? "linear-gradient(135deg, #080e09 0%, #0d2318 30%, #1a3a2a 60%, #080808 100%)"
               : "#080e09",
@@ -71,8 +55,22 @@ export default function HeroSection() {
           }}
         />
 
-        {/* Ambient glows */}
-        <div className="absolute inset-0 pointer-events-none">
+        {/* Video layer */}
+        <video
+          ref={videoRef}
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ opacity: 0.55, zIndex: 1 }}
+          onError={() => setVideoError(true)}
+        >
+          <source src="/hero-bg.mp4" type="video/mp4" />
+        </video>
+
+        {/* Ambient glows — above video */}
+        <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 2 }}>
           <div
             className="absolute"
             style={{
@@ -100,12 +98,13 @@ export default function HeroSection() {
           />
         </div>
 
-        {/* Dark overlay to ensure text readability */}
+        {/* Dark gradient overlay for text readability */}
         <div
           className="absolute inset-0"
           style={{
+            zIndex: 3,
             background:
-              "linear-gradient(to bottom, rgba(8,8,8,0.55) 0%, rgba(8,8,8,0.35) 40%, rgba(8,8,8,0.7) 85%, #080808 100%)",
+              "linear-gradient(to bottom, rgba(8,8,8,0.45) 0%, rgba(8,8,8,0.25) 40%, rgba(8,8,8,0.65) 85%, #080808 100%)",
           }}
         />
       </div>
