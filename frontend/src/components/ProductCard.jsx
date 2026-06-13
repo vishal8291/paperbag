@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useUser } from "../context/UserContext";
 import { useCart } from "../context/CartContext";
+import { useStore } from "../context/StoreContext";
 import { wishlistApi } from "../lib/api";
 
 const FALLBACK_IMG = "/file.svg";
@@ -12,6 +13,7 @@ const FALLBACK_IMG = "/file.svg";
 export default function ProductCard({ product, initialWishlisted = false }) {
   const { user }      = useUser();
   const { addToCart } = useCart();
+  const { slug }      = useStore();
   const [wishlisted, setWishlisted] = useState(initialWishlisted);
   const [wishing,    setWishing]    = useState(false);
   const [added,      setAdded]      = useState(false);
@@ -40,7 +42,7 @@ export default function ProductCard({ product, initialWishlisted = false }) {
   };
 
   return (
-    <Link href={`/products/${product._id}`} className="block group">
+    <Link href={slug ? `/store/${slug}/products/${product._id}` : `/products/${product._id}`} className="block group">
       <div className="card overflow-hidden h-full flex flex-col">
         {/* Image */}
         <div className="relative overflow-hidden bg-gray-50" style={{ aspectRatio: "4/3" }}>

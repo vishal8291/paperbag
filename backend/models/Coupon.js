@@ -5,7 +5,6 @@ const couponSchema = new mongoose.Schema(
     code: {
       type: String,
       required: true,
-      unique: true,
       uppercase: true,
       trim: true,
     },
@@ -43,9 +42,17 @@ const couponSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+    storeId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Store",
+      required: true,
+    },
   },
   { timestamps: true }
 );
+
+// Compound index to make coupon codes unique per store
+couponSchema.index({ storeId: 1, code: 1 }, { unique: true });
 
 // Virtual: is the coupon currently valid?
 couponSchema.virtual("isValid").get(function () {

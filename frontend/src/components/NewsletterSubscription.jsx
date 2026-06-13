@@ -27,7 +27,7 @@ export default function NewsletterSubscription() {
   };
 
   return (
-    <section className="section-pad" style={{ background: "var(--green-800)" }}>
+    <section className="section-pad relative overflow-hidden" style={{ background: "#000000" }}>
       <div className="max-w-3xl mx-auto px-6 text-center">
         <motion.div
           initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}

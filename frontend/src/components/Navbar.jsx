@@ -6,17 +6,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useCart }   from "../context/CartContext";
 import { useSearch } from "../context/SearchContext";
 import { useUser }   from "../context/UserContext";
+import { useStore }  from "../context/StoreContext";
 import { useRouter, usePathname } from "next/navigation";
 
-const NAV_LINKS = [
-  { label: "Home",        href: "/" },
-  { label: "Products",    href: "/products" },
-  { label: "Track Order", href: "/track-order" },
-  { label: "FAQ",         href: "/faq" },
-  { label: "Contact",     href: "/contact" },
-];
-
 export default function Navbar() {
+  const { store, slug } = useStore();
   const { getCartCount }              = useCart();
   const { searchTerm, setSearchTerm } = useSearch();
   const { user, logout, isAdmin }     = useUser();
@@ -29,6 +23,14 @@ export default function Navbar() {
   const [searchOpen,   setSearchOpen]   = useState(false);
   const dropdownRef = useRef(null);
   const searchRef   = useRef(null);
+
+  const NAV_LINKS = [
+    { label: "Home",        href: slug ? `/store/${slug}` : "/" },
+    { label: "Products",    href: slug ? `/store/${slug}/products` : "/products" },
+    { label: "Track Order", href: slug ? `/store/${slug}/track-order` : "/track-order" },
+    { label: "FAQ",         href: slug ? `/store/${slug}/faq` : "/faq" },
+    { label: "Contact",     href: slug ? `/store/${slug}/contact` : "/contact" },
+  ];
 
   // Scroll effect
   useEffect(() => {
@@ -50,22 +52,32 @@ export default function Navbar() {
   // Close mobile on route change
   useEffect(() => { setMobileOpen(false); setDropdownOpen(false); }, [pathname]);
 
-  const handleLogout = () => { logout(); router.push("/"); };
+  const handleLogout = () => { logout(); router.push(slug ? `/store/${slug}` : "/"); };
 
   const cartCount = getCartCount();
 
   return (
     <>
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "glass shadow-lg py-2" : "bg-transparent py-4"
-      }`}>
+      <header
+        className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+        style={{
+          padding: scrolled ? "8px 0" : "16px 0",
+          background: scrolled ? "rgba(8,8,8,0.85)" : "transparent",
+          backdropFilter: scrolled ? "blur(20px)" : "none",
+          borderBottom: scrolled ? "1px solid rgba(255,255,255,0.07)" : "none",
+        }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-4">
 
           {/* ── Logo ── */}
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            <span className="text-2xl">🌿</span>
-            <span className="text-xl font-black tracking-tight" style={{ color: "var(--green-900)" }}>
-              Paperbag
+          <Link href={slug ? `/store/${slug}` : "/"} className="flex items-center gap-2 shrink-0">
+            {store?.logo ? (
+              <img src={store.logo} alt={store.name} className="w-8 h-8 object-contain" />
+            ) : (
+              <span className="text-2xl">🌿</span>
+            )}
+            <span className="text-xl font-black tracking-tight text-white">
+              {store?.name || "Paperbag"}
             </span>
           </Link>
 
@@ -75,8 +87,8 @@ export default function Navbar() {
               <Link key={href} href={href}
                 className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
                   pathname === href
-                    ? "bg-green-800 text-white shadow-sm"
-                    : "text-gray-700 hover:bg-green-50 hover:text-green-800"
+                    ? "bg-white/10 text-white"
+                    : "text-white/60 hover:text-white hover:bg-white/5"
                 }`}>
                 {label}
               </Link>
@@ -106,7 +118,7 @@ export default function Navbar() {
                       placeholder="Search products..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      onKeyDown={(e) => { if (e.key === "Enter") { router.push("/products"); setSearchOpen(false); }}}
+                      onKeyDown={(e) => { if (e.key === "Enter") { router.push(slug ? `/store/${slug}/products` : "/products"); setSearchOpen(false); }}}
                       className="w-full bg-transparent border border-green-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none"
                       style={{ borderColor: "var(--green-400)" }}
                     />
@@ -116,7 +128,7 @@ export default function Navbar() {
             </div>
 
             {/* Cart */}
-            <Link href="/cart" className="relative p-2 rounded-full hover:bg-green-50 transition text-gray-600 hover:text-green-800">
+            <Link href={slug ? `/store/${slug}/cart` : "/cart"} className="relative p-2 rounded-full hover:bg-green-50 transition text-gray-600 hover:text-green-800">
               🛒
               {cartCount > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 w-5 h-5 rounded-full text-white text-xs font-bold flex items-center justify-center"
@@ -172,8 +184,8 @@ export default function Navbar() {
                       </div>
                       {[
                         { icon: "👤", label: "My Profile",    href: "/user/profile" },
-                        { icon: "📦", label: "My Orders",     href: "/orders" },
-                        { icon: "❤️",  label: "Wishlist",     href: "/wishlist" },
+                        { icon: "📦", label: "My Orders",     href: slug ? `/store/${slug}/orders` : "/orders" },
+                        { icon: "❤️",  label: "Wishlist",     href: slug ? `/store/${slug}/wishlist` : "/wishlist" },
                       ].map(({ icon, label, href }) => (
                         <Link key={href} href={href}
                           className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 transition">
@@ -227,8 +239,8 @@ export default function Navbar() {
                   </Link>
                 ))}
                 {user && <>
-                  <Link href="/wishlist" className="px-4 py-3 rounded-xl text-sm text-gray-700 hover:bg-green-50">❤️ Wishlist</Link>
-                  <Link href="/orders" className="px-4 py-3 rounded-xl text-sm text-gray-700 hover:bg-green-50">📦 My Orders</Link>
+                  <Link href={slug ? `/store/${slug}/wishlist` : "/wishlist"} className="px-4 py-3 rounded-xl text-sm text-gray-700 hover:bg-green-50">❤️ Wishlist</Link>
+                  <Link href={slug ? `/store/${slug}/orders` : "/orders"} className="px-4 py-3 rounded-xl text-sm text-gray-700 hover:bg-green-50">📦 My Orders</Link>
                   {isAdmin && <Link href="/admin" className="px-4 py-3 rounded-xl text-sm font-semibold hover:bg-yellow-50" style={{color:"var(--gold)"}}>⚙️ Admin</Link>}
                   <button onClick={handleLogout} className="px-4 py-3 rounded-xl text-sm text-red-500 hover:bg-red-50 text-left font-semibold">🚪 Logout</button>
                 </>}

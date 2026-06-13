@@ -1,19 +1,21 @@
 const express  = require("express");
 const mongoose = require("mongoose");
 const Review   = require("../models/Review");
+const Product  = require("../models/Product");
 const { protect, optionalAuth } = require("../middleware/auth");
+const { requireTenant } = require("../middleware/tenant");
 
 const router = express.Router({ mergeParams: true }); // mergeParams gives access to :productId
 
 // ── GET /api/reviews/:productId ───────────────────────────────
-router.get("/:productId", optionalAuth, async (req, res) => {
+router.get("/:productId", requireTenant, optionalAuth, async (req, res) => {
   try {
     const { productId } = req.params;
     if (!mongoose.Types.ObjectId.isValid(productId)) {
       return res.status(400).json({ message: "Invalid product ID." });
     }
 
-    const reviews = await Review.find({ productId })
+    const reviews = await Review.find({ productId, storeId: req.storeId })
       .sort({ createdAt: -1 })
       .limit(50)
       .lean();
@@ -34,11 +36,17 @@ router.get("/:productId", optionalAuth, async (req, res) => {
 });
 
 // ── POST /api/reviews/:productId ─────────────────────────────
-router.post("/:productId", protect, async (req, res) => {
+router.post("/:productId", requireTenant, protect, async (req, res) => {
   try {
     const { productId } = req.params;
     if (!mongoose.Types.ObjectId.isValid(productId)) {
       return res.status(400).json({ message: "Invalid product ID." });
+    }
+
+    // Verify product belongs to active store
+    const product = await Product.findOne({ _id: productId, storeId: req.storeId });
+    if (!product) {
+      return res.status(404).json({ message: "Product not found in this store." });
     }
 
     const { rating, review, name } = req.body;
@@ -53,10 +61,10 @@ router.post("/:productId", protect, async (req, res) => {
     const safeName   = String(name   || req.user.name || "Anonymous").replace(/[<>"']/g, "").trim().slice(0, 80);
     const safeReview = String(review).replace(/[<>"']/g, "").trim().slice(0, 500);
 
-    // Upsert — update existing review if user already reviewed this product
+    // Upsert — update existing review if user already reviewed this product in this store
     const saved = await Review.findOneAndUpdate(
-      { productId, userId: req.user.id },
-      { productId, userId: req.user.id, name: safeName, rating: Number(rating), review: safeReview },
+      { productId, userId: req.user.id, storeId: req.storeId },
+      { productId, userId: req.user.id, storeId: req.storeId, name: safeName, rating: Number(rating), review: safeReview },
       { upsert: true, new: true, runValidators: true }
     );
 

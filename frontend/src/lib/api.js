@@ -8,11 +8,20 @@ function getToken() {
   return localStorage.getItem("token");
 }
 
+function getStoreSlug() {
+  if (typeof window === "undefined") return null;
+  const path = window.location.pathname;
+  const match = path.match(/^\/store\/([^/]+)/);
+  return match ? match[1] : null;
+}
+
 async function request(path, options = {}) {
   const token = getToken();
+  const storeSlug = getStoreSlug();
   const headers = {
     "Content-Type": "application/json",
     ...(token && { Authorization: `Bearer ${token}` }),
+    ...(storeSlug && { "x-store-slug": storeSlug }),
     ...options.headers,
   };
 
@@ -54,18 +63,26 @@ export const productApi = {
   getById:   (id)          => request(`/api/products/${id}`),
   create:    (formData)    => {
     const token = getToken();
+    const storeSlug = getStoreSlug();
     return fetch(`${BASE_URL}/api/products`, {
       method: "POST",
       body: formData,
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      headers: {
+        ...(token && { Authorization: `Bearer ${token}` }),
+        ...(storeSlug && { "x-store-slug": storeSlug }),
+      },
     }).then(r => r.json());
   },
   update:    (id, formData) => {
     const token = getToken();
+    const storeSlug = getStoreSlug();
     return fetch(`${BASE_URL}/api/products/${id}`, {
       method: "PUT",
       body: formData,
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      headers: {
+        ...(token && { Authorization: `Bearer ${token}` }),
+        ...(storeSlug && { "x-store-slug": storeSlug }),
+      },
     }).then(r => r.json());
   },
   delete:    (id) => request(`/api/products/${id}`, { method: "DELETE" }),

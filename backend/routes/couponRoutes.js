@@ -1,6 +1,7 @@
 const express  = require("express");
 const router   = express.Router();
-const { protect, adminOnly } = require("../middleware/auth");
+const { protect, adminOnly, sellerOnly } = require("../middleware/auth");
+const { requireTenant } = require("../middleware/tenant");
 const {
   validateCoupon,
   getAllCoupons,
@@ -10,12 +11,12 @@ const {
 } = require("../controllers/couponController");
 
 // Public — validate coupon at checkout
-router.post("/validate", validateCoupon);
+router.post("/validate", requireTenant, validateCoupon);
 
-// Admin routes
-router.get("/",           protect, adminOnly, getAllCoupons);
-router.post("/",          protect, adminOnly, createCoupon);
-router.patch("/:id/toggle", protect, adminOnly, toggleCoupon);
-router.delete("/:id",    protect, adminOnly, deleteCoupon);
+// Seller/Admin routes
+router.get("/",           protect, sellerOnly, getAllCoupons);
+router.post("/",          protect, sellerOnly, requireTenant, createCoupon);
+router.patch("/:id/toggle", protect, sellerOnly, toggleCoupon);
+router.delete("/:id",    protect, sellerOnly, deleteCoupon);
 
 module.exports = router;

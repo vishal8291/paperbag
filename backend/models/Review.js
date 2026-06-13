@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const reviewSchema = new mongoose.Schema(
   {
+    storeId:   { type: mongoose.Schema.Types.ObjectId, ref: "Store", required: true },
     productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true, index: true },
     userId:    { type: mongoose.Schema.Types.ObjectId, ref: "User",    required: true },
     name:      { type: String, required: true, trim: true, maxlength: 80 },

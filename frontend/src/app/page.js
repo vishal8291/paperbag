@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import HeroSection from "../components/HeroSection";
 import WhyChooseUs from "../components/WhyChooseUs";
 import CategoriesSection from "../components/CategoriesSection";
@@ -10,43 +10,33 @@ import ProductCollection from "../components/ProductCollection";
 import SustainabilityStats from "../components/SustainabilityStats";
 import Commitment from "../components/Commitment";
 import Testimonials from "../components/Testimonials";
-import GetInTouch from "../components/GetInTouch";
 import NewsletterSubscription from "../components/NewsletterSubscription";
-import SubmitTestimonial from "../components/SubmitTestimonial";
-import { useSearch } from "../context/SearchContext";
+
+// Page flow (Shopify-inspired dark cinematic):
+// 1. Hero — "Be the store they shop from"
+// 2. Products — curated eco products
+// 3. WhyChooseUs — multi-channel + features grid
+// 4. CategoriesSection — scrolling category icon wall
+// 5. SustainabilityStats — big numbers + order card
+// 6. Commitment — Leaf AI sidekick
+// 7. TrustBadges — CSS globe "rock steady blazing fast"
+// 8. Testimonials — seller success stories
+// 9. HowItWorks — "Build fast" seller+buyer steps
+// 10. Newsletter
 
 export default function Home() {
-  const { searchTerm } = useSearch();
-  const [products, setProducts] = useState([]);
-
-  useEffect(() => {
-    const base = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-    fetch(`${base}/api/products`)
-      .then((res) => res.json())
-      .then((data) => setProducts(Array.isArray(data) ? data : (data.products || [])))
-      .catch(() => setProducts([]));
-  }, []);
-
-  const filteredProducts = products.filter(
-    (product) =>
-      typeof product.name === "string" &&
-      product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   return (
-    <div>
+    <div style={{ background: "var(--bg-0)" }}>
       <HeroSection />
-      <ProductCollection products={filteredProducts} />
-      <TrustBadges />
-      <CategoriesSection />
+      <ProductCollection />
       <WhyChooseUs />
-      <HowItWorks />
+      <CategoriesSection />
       <SustainabilityStats />
       <Commitment />
+      <TrustBadges />
       <Testimonials />
-      <GetInTouch />
+      <HowItWorks />
       <NewsletterSubscription />
-      <SubmitTestimonial />
     </div>
   );
 }

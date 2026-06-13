@@ -10,6 +10,7 @@ const productSchema = new mongoose.Schema({
   stock:          { type: Number, default: 0, min: 0 },   // inventory quantity
   category:       { type: String, default: "general", trim: true },
   isActive:       { type: Boolean, default: true },        // soft-delete / hide from listing
+  storeId:        { type: mongoose.Schema.Types.ObjectId, ref: "Store", required: true },
 }, {
   timestamps: true,
 });

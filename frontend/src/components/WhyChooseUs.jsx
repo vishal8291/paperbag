@@ -2,71 +2,183 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import { useStore } from "../context/StoreContext";
 
-const features = [
-  { icon: "🌱", title: "100% Biodegradable",   desc: "Every bag breaks down naturally — no plastic, no microplastics, no guilt.",       color: "#40916c" },
-  { icon: "✋", title: "Handcrafted Quality",   desc: "Skilled artisans craft each bag with care, ensuring unique character and strength.", color: "#c9a84c" },
-  { icon: "♻️", title: "Recycled Materials",   desc: "We source only responsibly recycled paper and soy-based inks for every order.",    color: "#52b788" },
-  { icon: "🎨", title: "Custom Designs",        desc: "Your brand, your colors, your size. Full customisation for any occasion.",          color: "#e8c97a" },
-  { icon: "🚚", title: "Pan-India Delivery",    desc: "Fast, reliable shipping to every corner of India. Track your order in real-time.", color: "#74c69d" },
-  { icon: "⭐", title: "Satisfaction Guarantee",desc: "Not happy? We'll make it right — every single time, no questions asked.",         color: "#c9a84c" },
+// Inspired by Shopify image 2 — "Sell everywhere eco buyers browse"
+const CHANNELS = [
+  { icon: "🤖", name: "Leaf AI",      color: "#52b788", desc: "AI-powered shopping" },
+  { icon: "📱", name: "Instagram",    color: "#e1306c", desc: "Social discovery" },
+  { icon: "💬", name: "WhatsApp",     color: "#25d366", desc: "Conversational buy" },
+  { icon: "🔍", name: "Google",       color: "#4285f4", desc: "Search-first" },
+  { icon: "🌿", name: "Paperbag App", color: "#c9a84c", desc: "Native experience" },
+  { icon: "🏪", name: "Stores Page",  color: "#74c69d", desc: "Browse & discover" },
 ];
 
-const containerVariants = {
-  hidden:  {},
-  visible: { transition: { staggerChildren: 0.1 } },
-};
-const cardVariants = {
-  hidden:  { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
-};
+const FEATURES = [
+  { icon: "🆓", title: "Zero Listing Fees",     desc: "List unlimited products — we only earn when you do." },
+  { icon: "💰", title: "10% Commission Only",    desc: "The lowest split in India's eco-marketplace space." },
+  { icon: "⚡", title: "Weekly Payouts",         desc: "Earnings transferred directly to your bank every week." },
+  { icon: "🤖", title: "Leaf AI Assistant",      desc: "Our AI helps your buyers find exactly what they need." },
+  { icon: "📊", title: "Analytics Dashboard",    desc: "Real-time sales, revenue, and product performance data." },
+  { icon: "🌿", title: "Eco Community",          desc: "Reach millions of green-conscious buyers across India." },
+];
 
 export default function WhyChooseUs() {
-  return (
-    <section className="section-pad" style={{ background: "var(--cream)" }}>
-      <div className="max-w-7xl mx-auto px-6">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }} transition={{ duration: 0.6 }}
-          className="text-center mb-14"
-        >
-          <span className="inline-block px-4 py-1.5 rounded-full text-sm font-semibold mb-4"
-            style={{ background: "var(--green-100)", color: "var(--green-800)" }}>
-            Why Paperbag?
-          </span>
-          <h2 className="text-4xl md:text-5xl font-black mb-4" style={{ color: "var(--green-900)" }}>
-            Crafted With Purpose
-          </h2>
-          <p className="text-lg max-w-2xl mx-auto" style={{ color: "#6b7280" }}>
-            We combine traditional artisanship with modern sustainability — because beautiful packaging
-            shouldn't cost the planet.
-          </p>
-        </motion.div>
+  const { slug } = useStore();
+  const isPaperbag = !slug || slug === "paperbag";
 
-        {/* Cards grid */}
-        <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-80px" }}
-        >
-          {features.map(({ icon, title, desc, color }, i) => (
-            <motion.div key={i} variants={cardVariants}>
-              <div className="card p-8 h-full flex flex-col gap-4 group cursor-default">
-                <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl"
-                  style={{ background: `${color}18` }}>
-                  {icon}
-                </div>
-                <h3 className="text-xl font-bold" style={{ color: "var(--green-900)" }}>{title}</h3>
-                <p className="text-sm leading-relaxed flex-1" style={{ color: "#6b7280" }}>{desc}</p>
-                <div className="w-10 h-1 rounded-full transition-all duration-300 group-hover:w-16"
-                  style={{ background: color }} />
+  return (
+    <section
+      className="section-xl relative overflow-hidden"
+      style={{ background: "var(--bg-0)" }}
+    >
+      {/* Ambient glow */}
+      <div
+        className="absolute top-0 left-1/2 -translate-x-1/2 pointer-events-none"
+        style={{
+          width: "80vw", height: "50vh",
+          background: "radial-gradient(ellipse, rgba(82,183,136,0.06) 0%, transparent 65%)",
+        }}
+      />
+
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+
+        {/* ── Section 1: Multi-channel ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-28">
+          {/* Left: Channel cards */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+          >
+            <div className="grid grid-cols-3 gap-3">
+              {CHANNELS.map((ch, i) => (
+                <motion.div
+                  key={ch.name}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.07, duration: 0.45 }}
+                  className="dark-card p-4 flex flex-col items-center gap-2 text-center cursor-default"
+                >
+                  <div
+                    className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl"
+                    style={{ background: `${ch.color}18` }}
+                  >
+                    {ch.icon}
+                  </div>
+                  <p className="text-xs font-bold text-white">{ch.name}</p>
+                  <p className="text-[10px]" style={{ color: "rgba(255,255,255,0.4)" }}>{ch.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Live stat strip */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.5 }}
+              className="mt-4 dark-card p-4 flex items-center gap-4"
+              style={{ border: "1px solid rgba(82,183,136,0.15)" }}
+            >
+              <div
+                className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+                style={{ background: "rgba(82,183,136,0.15)" }}
+              >
+                🛒
+              </div>
+              <div className="flex-1">
+                <p className="text-xs font-semibold text-white">Kavita from Pune ordered an Eco Tote</p>
+                <p className="text-[10px] mt-0.5" style={{ color: "rgba(255,255,255,0.4)" }}>via Leaf AI · 30 seconds ago</p>
+              </div>
+              <div className="text-right">
+                <p className="text-xs font-black text-white">₹349</p>
+                <p className="text-[9px]" style={{ color: "#52b788" }}>Paid ✓</p>
               </div>
             </motion.div>
-          ))}
-        </motion.div>
+          </motion.div>
+
+          {/* Right: Copy */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+          >
+            <span
+              className="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-6"
+              style={{ background: "rgba(82,183,136,0.1)", color: "#74c69d", border: "1px solid rgba(82,183,136,0.2)" }}
+            >
+              Multi-Channel
+            </span>
+            <h2 className="display-lg mb-6">
+              Sell everywhere<br />
+              <span style={{ color: "rgba(255,255,255,0.35)" }}>eco buyers browse.</span><br />
+              Online and in chat.
+            </h2>
+            <p className="text-base leading-relaxed mb-8" style={{ color: "rgba(255,255,255,0.55)" }}>
+              Your products appear on Google search, Leaf AI conversations, and our curated stores directory — all automatically, without any extra setup.
+            </p>
+            <div className="space-y-3">
+              {[
+                "Auto-indexed on Google & AI shopping",
+                "Discoverable via Leaf AI chat assistant",
+                "Featured in Paperbag Stores directory",
+              ].map(text => (
+                <div key={text} className="flex items-center gap-3 text-sm" style={{ color: "rgba(255,255,255,0.7)" }}>
+                  <span className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 text-[10px]"
+                    style={{ background: "rgba(82,183,136,0.2)", color: "#74c69d" }}>✓</span>
+                  {text}
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+
+        {/* ── Section 2: Seller perks grid ── */}
+        <div>
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="display-md mb-4">
+              Everything you need to{" "}
+              <span className="text-gradient">build your eco business</span>
+            </h2>
+            <p className="text-base max-w-lg mx-auto" style={{ color: "rgba(255,255,255,0.5)" }}>
+              From day one to your first thousand orders — Paperbag has the tools.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {FEATURES.map(({ icon, title, desc }, i) => (
+              <motion.div
+                key={title}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08, duration: 0.5 }}
+                className="dark-card p-6 flex gap-4 items-start"
+              >
+                <div
+                  className="w-11 h-11 rounded-2xl flex items-center justify-center text-xl shrink-0"
+                  style={{ background: "rgba(82,183,136,0.1)" }}
+                >
+                  {icon}
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-white mb-1">{title}</h3>
+                  <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>{desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
       </div>
     </section>
   );

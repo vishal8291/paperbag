@@ -8,7 +8,7 @@ exports.submitGetInTouch = async (req, res) => {
       return res.status(400).json({ message: "Please fill all required fields." });
     }
 
-    const newEntry = new GetInTouch({ fullName, email, phone, subject, message });
+    const newEntry = new GetInTouch({ storeId: req.storeId, fullName, email, phone, subject, message });
     await newEntry.save();
 
     res.status(200).json({ message: "Information received successfully" });

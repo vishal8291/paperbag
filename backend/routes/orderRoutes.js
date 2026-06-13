@@ -1,13 +1,14 @@
 const express = require("express");
 const { createOrder, getAllOrders, getMyOrders, getOrderById, updateOrderStatus } = require("../controllers/orderController");
-const { protect, adminOnly, optionalAuth } = require("../middleware/auth");
+const { protect, adminOnly, sellerOnly, optionalAuth } = require("../middleware/auth");
+const { requireTenant } = require("../middleware/tenant");
 
 const router = express.Router();
 
-router.post("/",              optionalAuth, createOrder);          // COD order (auth optional)
-router.get("/my",             protect, getMyOrders);               // user's own orders
-router.get("/",               protect, adminOnly, getAllOrders);    // admin: all orders
-router.get("/:id",            protect, getOrderById);              // single order
-router.put("/:id/status",     protect, adminOnly, updateOrderStatus); // admin: update status
+router.post("/",              requireTenant, optionalAuth, createOrder);          // COD order (tenant required)
+router.get("/my",             requireTenant, protect, getMyOrders);               // user's own orders for this store
+router.get("/",               protect, sellerOnly, getAllOrders);                 // seller/admin: all orders for store
+router.get("/:id",            protect, getOrderById);                              // single order
+router.put("/:id/status",     protect, sellerOnly, updateOrderStatus);            // seller/admin: update status
 
 module.exports = router;

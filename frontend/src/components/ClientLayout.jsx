@@ -17,12 +17,7 @@ export default function ClientLayout({ children }) {
       <UserProvider>
         <CartProvider>
           <SearchProvider>
-            <PromoBanner />
-            <Navbar />
-            <main className="flex-grow">{children}</main>
-            <Footer />
-            <AIChatWidget />
-            <BackToTop />
+            {children}
           </SearchProvider>
         </CartProvider>
       </UserProvider>

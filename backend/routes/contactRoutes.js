@@ -1,15 +1,22 @@
 const express = require("express");
 const router = express.Router();
 const Contact = require("../models/Contact");
+const { requireTenant } = require("../middleware/tenant");
 
 // POST /api/contact
-router.post("/", async (req, res) => {
+router.post("/", requireTenant, async (req, res) => {
   try {
-    const { fullName, email, phone, subject, message } = req.body;
-    if (!fullName || !email || !subject || !message) {
+    const { fullName, name, email, message } = req.body;
+    const resolvedName = name || fullName;
+    if (!resolvedName || !email || !message) {
       return res.status(400).json({ message: "Missing required fields" });
     }
-    const contact = new Contact({ fullName, email, phone, subject, message });
+    const contact = new Contact({
+      storeId: req.storeId,
+      name: resolvedName,
+      email,
+      message,
+    });
     await contact.save();
     res.status(201).json({ message: "Message received!" });
   } catch (err) {

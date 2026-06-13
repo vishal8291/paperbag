@@ -6,9 +6,10 @@ const UserSchema = new mongoose.Schema(
     email:    { type: String, required: true, unique: true, lowercase: true, trim: true },
     password: { type: String },   // optional — Google OAuth users have no password
     mobile:   { type: String, default: "" },
-    role:     { type: String, enum: ["user", "admin"], default: "user" },
+    role:     { type: String, enum: ["user", "seller", "admin"], default: "user" },
     googleId: { type: String },   // Google OAuth sub
     avatar:   { type: String, default: "" },
+    storeId:  { type: mongoose.Schema.Types.ObjectId, ref: "Store" },
     wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
     // Login lockout
     failedLoginAttempts: { type: Number, default: 0 },

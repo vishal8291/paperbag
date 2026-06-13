@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const orderSchema = new mongoose.Schema(
   {
+    storeId: { type: mongoose.Schema.Types.ObjectId, ref: "Store", required: true },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // null for guest orders
     customer: {
       name:    { type: String, required: true },

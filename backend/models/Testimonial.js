@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const testimonialSchema = new mongoose.Schema({
+  storeId: { type: mongoose.Schema.Types.ObjectId, ref: "Store", required: true },
   name: { type: String, required: true },
   role: { type: String, default: "Customer" },            // NEW FIELD
   review: { type: String, required: true },

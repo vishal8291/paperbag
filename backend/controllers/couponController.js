@@ -6,7 +6,8 @@ exports.validateCoupon = async (req, res) => {
     const { code, orderTotal } = req.body;
     if (!code) return res.status(400).json({ message: "Coupon code is required" });
 
-    const coupon = await Coupon.findOne({ code: code.toUpperCase().trim() });
+    // Find coupon in the active store
+    const coupon = await Coupon.findOne({ code: code.toUpperCase().trim(), storeId: req.storeId });
     if (!coupon) return res.status(404).json({ message: "Invalid coupon code" });
 
     if (!coupon.isActive)
@@ -45,26 +46,40 @@ exports.validateCoupon = async (req, res) => {
   }
 };
 
-// ── Get all coupons (admin) ────────────────────────────────
+// ── Get all coupons (seller/admin) ──────────────────────────
 exports.getAllCoupons = async (req, res) => {
   try {
-    const coupons = await Coupon.find().sort({ createdAt: -1 });
+    let filter = {};
+    if (req.user.role === "seller") {
+      filter.storeId = req.user.storeId;
+    } else if (req.user.role === "admin" && req.storeId) {
+      filter.storeId = req.storeId;
+    } else if (req.user.role !== "admin") {
+      return res.status(403).json({ message: "Access denied." });
+    }
+
+    const coupons = await Coupon.find(filter).sort({ createdAt: -1 });
     res.json(coupons);
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }
 };
 
-// ── Create coupon (admin) ──────────────────────────────────
+// ── Create coupon (seller/admin) ────────────────────────────
 exports.createCoupon = async (req, res) => {
   try {
     const { code, discountType, discountValue, minOrderAmount, maxUses, expiresAt } = req.body;
     if (!code || !discountValue)
       return res.status(400).json({ message: "code and discountValue are required" });
 
-    const existing = await Coupon.findOne({ code: code.toUpperCase().trim() });
+    // Verify ownership of the store
+    if (req.user.role !== "admin" && req.user.storeId?.toString() !== req.storeId?.toString()) {
+      return res.status(403).json({ message: "Access denied. You can only create coupons for your own store." });
+    }
+
+    const existing = await Coupon.findOne({ code: code.toUpperCase().trim(), storeId: req.storeId });
     if (existing)
-      return res.status(400).json({ message: "Coupon code already exists" });
+      return res.status(400).json({ message: "Coupon code already exists in this store" });
 
     const coupon = await Coupon.create({
       code: code.toUpperCase().trim(),
@@ -73,22 +88,29 @@ exports.createCoupon = async (req, res) => {
       minOrderAmount:  Number(minOrderAmount)  || 0,
       maxUses:         maxUses ? Number(maxUses) : null,
       expiresAt:       expiresAt ? new Date(expiresAt) : null,
-      createdBy:       req.user._id,
+      createdBy:       req.user.id,
+      storeId:         req.storeId,
     });
 
     res.status(201).json({ message: "Coupon created", coupon });
   } catch (err) {
     if (err.code === 11000)
-      return res.status(400).json({ message: "Coupon code already exists" });
+      return res.status(400).json({ message: "Coupon code already exists in this store" });
     res.status(500).json({ message: "Server error" });
   }
 };
 
-// ── Toggle coupon active/inactive (admin) ──────────────────
+// ── Toggle coupon active/inactive (seller/admin) ────────────
 exports.toggleCoupon = async (req, res) => {
   try {
     const coupon = await Coupon.findById(req.params.id);
     if (!coupon) return res.status(404).json({ message: "Coupon not found" });
+
+    // Verify ownership
+    if (req.user.role !== "admin" && req.user.storeId?.toString() !== coupon.storeId?.toString()) {
+      return res.status(403).json({ message: "Access denied. You can only manage coupons for your own store." });
+    }
+
     coupon.isActive = !coupon.isActive;
     await coupon.save();
     res.json({ message: `Coupon ${coupon.isActive ? "activated" : "deactivated"}`, coupon });
@@ -97,9 +119,17 @@ exports.toggleCoupon = async (req, res) => {
   }
 };
 
-// ── Delete coupon (admin) ──────────────────────────────────
+// ── Delete coupon (seller/admin) ────────────────────────────
 exports.deleteCoupon = async (req, res) => {
   try {
+    const coupon = await Coupon.findById(req.params.id);
+    if (!coupon) return res.status(404).json({ message: "Coupon not found" });
+
+    // Verify ownership
+    if (req.user.role !== "admin" && req.user.storeId?.toString() !== coupon.storeId?.toString()) {
+      return res.status(403).json({ message: "Access denied. You can only delete coupons for your own store." });
+    }
+
     await Coupon.findByIdAndDelete(req.params.id);
     res.json({ message: "Coupon deleted" });
   } catch (err) {

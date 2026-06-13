@@ -24,7 +24,7 @@ exports.createOrder = async (req, res) => {
 
     // ── Idempotency check ─────────────────────────────────────
     if (idempotencyKey) {
-      const existing = await Order.findOne({ idempotencyKey });
+      const existing = await Order.findOne({ idempotencyKey, storeId: req.storeId });
       if (existing) {
         return res.status(200).json({ message: "Order already placed.", order: existing });
       }
@@ -37,7 +37,7 @@ exports.createOrder = async (req, res) => {
       if (!mongoose.Types.ObjectId.isValid(item.productId)) {
         return res.status(400).json({ message: `Invalid product ID: ${item.productId}` });
       }
-      const product = await Product.findById(item.productId);
+      const product = await Product.findOne({ _id: item.productId, storeId: req.storeId });
       if (!product) {
         return res.status(400).json({ message: `Product not found: ${item.productId}` });
       }
@@ -65,6 +65,7 @@ exports.createOrder = async (req, res) => {
     };
 
     const order = await Order.create({
+      storeId:        req.storeId,
       userId:         req.user?.id,
       customer:       safeCustomer,
       items:          items.map((i) => ({
@@ -85,7 +86,7 @@ exports.createOrder = async (req, res) => {
     // ── Decrement stock for each ordered item ─────────────────
     await Promise.all(
       items.map((i) =>
-        Product.findByIdAndUpdate(i.productId, {
+        Product.findOneAndUpdate({ _id: i.productId, storeId: req.storeId }, {
           $inc: { stock: -(Math.max(1, parseInt(i.quantity, 10) || 1)) },
         })
       )
@@ -99,10 +100,19 @@ exports.createOrder = async (req, res) => {
   }
 };
 
-// ── GET /api/orders (admin only) ─────────────────────────────
+// ── GET /api/orders (seller/admin all orders) ─────────────────
 exports.getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.find().sort({ createdAt: -1 });
+    let filter = {};
+    if (req.user.role === "seller") {
+      filter.storeId = req.user.storeId;
+    } else if (req.user.role === "admin" && req.storeId) {
+      filter.storeId = req.storeId;
+    } else if (req.user.role !== "admin") {
+      return res.status(403).json({ message: "Access denied." });
+    }
+
+    const orders = await Order.find(filter).sort({ createdAt: -1 });
     res.json(orders);
   } catch {
     res.status(500).json({ message: "Error fetching orders." });
@@ -112,7 +122,7 @@ exports.getAllOrders = async (req, res) => {
 // ── GET /api/orders/my (logged-in user's orders) ─────────────
 exports.getMyOrders = async (req, res) => {
   try {
-    const orders = await Order.find({ userId: req.user.id }).sort({ createdAt: -1 });
+    const orders = await Order.find({ userId: req.user.id, storeId: req.storeId }).sort({ createdAt: -1 });
     res.json(orders);
   } catch {
     res.status(500).json({ message: "Error fetching your orders." });
@@ -129,11 +139,12 @@ exports.getOrderById = async (req, res) => {
     const order = await Order.findById(req.params.id);
     if (!order) return res.status(404).json({ message: "Order not found." });
 
-    // ── Ownership check — users can only see their own orders ──
+    // ── Ownership check — users can see their own orders, sellers see their store orders
+    const isBuyer = order.userId && order.userId.toString() === req.user?.id;
+    const isSeller = req.user?.role === "seller" && req.user?.storeId?.toString() === order.storeId?.toString();
     const isAdmin = req.user?.role === "admin";
-    const isOwner = order.userId && order.userId.toString() === req.user?.id;
 
-    if (!isAdmin && !isOwner) {
+    if (!isBuyer && !isSeller && !isAdmin) {
       return res.status(403).json({ message: "Access denied." });
     }
 
@@ -143,7 +154,7 @@ exports.getOrderById = async (req, res) => {
   }
 };
 
-// ── PUT /api/orders/:id/status (admin only) ───────────────────
+// ── PUT /api/orders/:id/status (seller/admin update status) ────
 exports.updateOrderStatus = async (req, res) => {
   try {
     const { status } = req.body;
@@ -155,8 +166,16 @@ exports.updateOrderStatus = async (req, res) => {
       return res.status(400).json({ message: "Invalid order ID." });
     }
 
-    const order = await Order.findByIdAndUpdate(req.params.id, { status }, { new: true });
+    const order = await Order.findById(req.params.id);
     if (!order) return res.status(404).json({ message: "Order not found." });
+
+    // Verify seller/admin owns this order's store
+    if (req.user?.role !== "admin" && req.user?.storeId?.toString() !== order.storeId?.toString()) {
+      return res.status(403).json({ message: "Access denied. You can only manage orders for your own store." });
+    }
+
+    order.status = status;
+    await order.save();
 
     sendOrderStatusEmail(order.customer.email, order).catch(() => {});
     res.json({ message: "Order status updated.", order });

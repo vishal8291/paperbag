@@ -39,6 +39,9 @@ const aiRoutes          = require("./routes/aiRoutes");
 const couponRoutes      = require("./routes/couponRoutes");
 const reviewRoutes      = require("./routes/reviewRoutes");
 const referralRoutes    = require("./routes/referralRoutes");
+const storeRoutes       = require("./routes/storeRoutes");
+
+const { resolveTenant } = require("./middleware/tenant");
 
 const app  = express();
 const PORT = process.env.PORT || 5000;
@@ -84,6 +87,22 @@ app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (mobile apps, curl, Postman in dev)
     if (!origin) return callback(null, true);
+    
+    // Always allow localhost/127.0.0.1 on any port in development
+    if (origin.startsWith("http://localhost:") || origin.startsWith("http://127.0.0.1:")) {
+      return callback(null, true);
+    }
+    
+    // Allow any local network IP 192.168.x.x on any port
+    if (/^http:\/\/192\.168\.\d+\.\d+(:\d+)?$/.test(origin)) {
+      return callback(null, true);
+    }
+    
+    // Allow Vercel deployments
+    if (origin.endsWith(".vercel.app") || /^https:\/\/.*\.vercel\.app$/.test(origin)) {
+      return callback(null, true);
+    }
+
     if (allowedOrigins.includes(origin)) return callback(null, true);
     callback(new Error(`CORS: origin ${origin} not allowed`));
   },
@@ -117,6 +136,9 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // ── Routes ────────────────────────────────────────────────────
+app.use(resolveTenant);
+
+app.use("/api/stores",       storeRoutes);
 app.use("/api/users",        userRoutes);
 app.use("/api/products",     productRoutes);
 app.use("/api/orders",       orderRoutes);

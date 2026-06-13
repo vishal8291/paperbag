@@ -1,7 +1,8 @@
 const express = require("express");
 const router  = express.Router();
 const Product = require("../models/Product");
-const { protect, adminOnly } = require("../middleware/auth");
+const { protect, adminOnly, sellerOnly } = require("../middleware/auth");
+const { requireTenant } = require("../middleware/tenant");
 
 // Cloudinary upload (falls back to local if not configured)
 let upload;
@@ -18,10 +19,10 @@ try {
 
 // ── GET /api/products ─────────────────────────────────────────
 // Supports: search, eco, sort, page, limit
-router.get("/", async (req, res) => {
+router.get("/", requireTenant, async (req, res) => {
   try {
     const { search, eco, sort, page = 1, limit = 20, category } = req.query;
-    const filter = { isActive: { $ne: false } }; // hide soft-deleted products
+    const filter = { isActive: { $ne: false }, storeId: req.storeId }; // hide soft-deleted products, scope to store
 
     if (search) {
       // Use text index if available; fall back to case-insensitive regex
@@ -59,9 +60,9 @@ router.get("/", async (req, res) => {
 });
 
 // ── GET /api/products/:id ─────────────────────────────────────
-router.get("/:id", async (req, res) => {
+router.get("/:id", requireTenant, async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findOne({ _id: req.params.id, storeId: req.storeId });
     if (!product) return res.status(404).json({ message: "Product not found." });
     res.json(product);
   } catch (error) {
@@ -69,9 +70,14 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// ── POST /api/products (admin only) ──────────────────────────
-router.post("/", protect, adminOnly, upload.single("image"), async (req, res) => {
+// ── POST /api/products (seller or admin) ──────────────────────────
+router.post("/", protect, sellerOnly, requireTenant, upload.single("image"), async (req, res) => {
   try {
+    // Check if seller owns this store
+    if (req.user.role !== "admin" && req.user.storeId?.toString() !== req.storeId?.toString()) {
+      return res.status(403).json({ message: "Access denied. You can only manage your own store." });
+    }
+
     const { name, price, description, imageUrl, availableSizes, ecoFriendly, category, stock } = req.body;
 
     let finalImageUrl;
@@ -93,6 +99,7 @@ router.post("/", protect, adminOnly, upload.single("image"), async (req, res) =>
       ecoFriendly:    ecoFriendly === "true",
       category:       category || "general",
       stock:          stock !== undefined ? parseInt(stock, 10) : 0,
+      storeId:        req.storeId,
     });
 
     res.status(201).json(product);
@@ -101,9 +108,14 @@ router.post("/", protect, adminOnly, upload.single("image"), async (req, res) =>
   }
 });
 
-// ── PUT /api/products/:id (admin only) ───────────────────────
-router.put("/:id", protect, adminOnly, upload.single("image"), async (req, res) => {
+// ── PUT /api/products/:id (seller or admin) ───────────────────────
+router.put("/:id", protect, sellerOnly, requireTenant, upload.single("image"), async (req, res) => {
   try {
+    // Check if seller owns this store
+    if (req.user.role !== "admin" && req.user.storeId?.toString() !== req.storeId?.toString()) {
+      return res.status(403).json({ message: "Access denied. You can only manage your own store." });
+    }
+
     const { name, price, description, availableSizes, ecoFriendly, category, stock } = req.body;
     const updatedData = {
       name,
@@ -117,18 +129,24 @@ router.put("/:id", protect, adminOnly, upload.single("image"), async (req, res) 
     if (req.file) {
       updatedData.imageUrl = req.file.path || `${process.env.SERVER_URL || "http://localhost:5000"}/uploads/${req.file.filename}`;
     }
-    const product = await Product.findByIdAndUpdate(req.params.id, updatedData, { new: true });
-    if (!product) return res.status(404).json({ message: "Product not found." });
+    const product = await Product.findOneAndUpdate({ _id: req.params.id, storeId: req.storeId }, updatedData, { new: true });
+    if (!product) return res.status(404).json({ message: "Product not found in this store." });
     res.json(product);
   } catch (error) {
     res.status(500).json({ message: "Failed to update product." });
   }
 });
 
-// ── DELETE /api/products/:id (admin only) ────────────────────
-router.delete("/:id", protect, adminOnly, async (req, res) => {
+// ── DELETE /api/products/:id (seller or admin) ────────────────────
+router.delete("/:id", protect, sellerOnly, requireTenant, async (req, res) => {
   try {
-    await Product.findByIdAndDelete(req.params.id);
+    // Check if seller owns this store
+    if (req.user.role !== "admin" && req.user.storeId?.toString() !== req.storeId?.toString()) {
+      return res.status(403).json({ message: "Access denied. You can only manage your own store." });
+    }
+
+    const product = await Product.findOneAndDelete({ _id: req.params.id, storeId: req.storeId });
+    if (!product) return res.status(404).json({ message: "Product not found in this store." });
     res.json({ message: "Product deleted." });
   } catch (error) {
     res.status(500).json({ message: error.message });

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const getInTouchSchema = new mongoose.Schema({
+  storeId: { type: mongoose.Schema.Types.ObjectId, ref: "Store", required: true },
   fullName: { type: String, required: true },
   email: { type: String, required: true },
   phone: String,

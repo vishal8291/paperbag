@@ -4,8 +4,10 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import ProductCard from "./ProductCard";
+import { useStore } from "../context/StoreContext";
 
 export default function ProductCollection() {
+  const { slug } = useStore();
   const [products, setProducts] = useState([]);
   const [loading,  setLoading]  = useState(true);
 
@@ -19,7 +21,7 @@ export default function ProductCollection() {
   }, []);
 
   return (
-    <section className="section-pad" style={{ background: "var(--cream-dark)" }}>
+    <section className="section-pad" style={{ background: "var(--bg-0)" }}>
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
         <motion.div
@@ -28,13 +30,13 @@ export default function ProductCollection() {
           className="text-center mb-14"
         >
           <span className="inline-block px-4 py-1.5 rounded-full text-sm font-semibold mb-4"
-            style={{ background: "var(--green-100)", color: "var(--green-800)" }}>
+            style={{ background: "rgba(82,183,136,0.1)", color: "#74c69d", border: "1px solid rgba(82,183,136,0.2)" }}>
             Our Products
           </span>
-          <h2 className="text-4xl md:text-5xl font-black mb-4" style={{ color: "var(--green-900)" }}>
+          <h2 className="text-4xl md:text-5xl font-black mb-4 text-white">
             Find Your Perfect Bag
           </h2>
-          <p className="text-lg max-w-2xl mx-auto" style={{ color: "#6b7280" }}>
+          <p className="text-lg max-w-2xl mx-auto" style={{ color: "rgba(255,255,255,0.45)" }}>
             From everyday shopping to luxury gifting — every bag tells a story of sustainability.
           </p>
         </motion.div>
@@ -81,7 +83,7 @@ export default function ProductCollection() {
           viewport={{ once: true }} transition={{ delay: 0.4 }}
           className="text-center mt-12"
         >
-          <Link href="/products">
+          <Link href={slug ? `/store/${slug}/products` : "/products"}>
             <button className="btn-primary text-base px-10 py-4">
               View All Products →
             </button>

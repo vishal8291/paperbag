@@ -41,6 +41,14 @@ function adminOnly(req, res, next) {
   next();
 }
 
+// ── Seller or Admin guard ─────────────────────────────────────────
+function sellerOnly(req, res, next) {
+  if (req.user?.role !== "seller" && req.user?.role !== "admin") {
+    return res.status(403).json({ message: "Access denied. Sellers or Admins only." });
+  }
+  next();
+}
+
 // ── Optional auth (attaches user if token valid, never blocks) ──
 function optionalAuth(req, res, next) {
   const authHeader = req.headers.authorization;
@@ -54,4 +62,4 @@ function optionalAuth(req, res, next) {
   next();
 }
 
-module.exports = { protect, adminOnly, optionalAuth };
+module.exports = { protect, adminOnly, optionalAuth, sellerOnly };
