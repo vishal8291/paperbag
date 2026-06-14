@@ -2,6 +2,7 @@
 
 import React from "react";
 import HeroSection from "../components/HeroSection";
+import BagViewer3D from "../components/BagViewer3D";
 import ImageCarousel from "../components/ImageCarousel";
 import FeatureImages from "../components/FeatureImages";
 import WhyChooseUs from "../components/WhyChooseUs";
@@ -30,6 +31,7 @@ export default function Home() {
   return (
     <div style={{ background: "var(--bg-0)" }}>
       <HeroSection />
+      <BagViewer3D />
       <ImageCarousel />
       <FeatureImages />
       <ProductCollection />
